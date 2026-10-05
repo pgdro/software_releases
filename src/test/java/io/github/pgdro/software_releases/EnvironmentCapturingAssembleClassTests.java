@@ -1,4 +1,4 @@
-package io.github.dgp_eu.software_releases;
+package io.github.pgdro.software_releases;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -7,9 +7,8 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import io.github.dgp_eu.software_releases.environment.EnvironmentCapturingAssembleClass;
-import io.github.dgp_eu.tools.core.ProjectClass;
+import io.github.pgdro.tools.core.ProjectClass;
+import io.github.pgdro.software.releases.environment.EnvironmentCapturingAssembleClass;
 
 /**
  * Testing for EnvironmentCapturingAssembleClass

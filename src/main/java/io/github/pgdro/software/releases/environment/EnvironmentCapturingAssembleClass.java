@@ -1,16 +1,15 @@
 /** Copyright 2026 Daniel-Gheorghe Popiniuc */
-package io.github.dgp_eu.software_releases.environment;
+package io.github.pgdro.software.releases.environment;
 
+import io.github.pgdro.tools.core.BasicStructuresClass;
+import io.github.pgdro.tools.core.ConfigurationClass;
+import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.core.ProjectClass;
+import io.github.pgdro.tools.core.ShellingClass;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import io.github.dgp_eu.tools.core.BasicStructuresClass;
-import io.github.dgp_eu.tools.core.ConfigurationClass;
-import io.github.dgp_eu.tools.core.LogExposureClass;
-import io.github.dgp_eu.tools.core.ProjectClass;
-import io.github.dgp_eu.tools.core.ShellingClass;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -24,7 +23,7 @@ public final class EnvironmentCapturingAssembleClass {
      * Constructor
      */
     private EnvironmentCapturingAssembleClass() {
-        super();
+        // intentionally left empty
     }
 
     /**
@@ -54,12 +53,18 @@ public final class EnvironmentCapturingAssembleClass {
      */
     private static Map<String, Object> gatherHardwareDetails() {
         return Map.of(
-                "CPU", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(EnvironmentHardwareClass.getDetailsAboutCentralProcessorUnit()),
-                "GPU", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(EnvironmentHardwareClass.getDetailsAboutGraphicCards()),
-                "Mainboard", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(EnvironmentHardwareClass.MotherboardAndSystemSubClass.getDetailsAboutMainboard()),
-                "Monitor", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(EnvironmentHardwareClass.getDetailsAboutMonitor()),
-                "Network Interface", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(EnvironmentHardwareClass.getDetailsAboutNetworkInterfaces()),
-                "RAM", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(EnvironmentHardwareClass.getDetailsAboutRandomAccessMemory()));
+                "CPU", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(
+                        EnvironmentHardwareClass.getDetailsAboutCentralProcessorUnit()),
+                "GPU", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(
+                        EnvironmentHardwareClass.getDetailsAboutGraphicCards()),
+                "Mainboard", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(
+                        EnvironmentHardwareClass.MotherboardAndSystemSubClass.getDetailsAboutMainboard()),
+                "Monitor", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(
+                        EnvironmentHardwareClass.getDetailsAboutMonitor()),
+                "Network Interface", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(
+                        EnvironmentHardwareClass.getDetailsAboutNetworkInterfaces()),
+                "RAM", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(
+                        EnvironmentHardwareClass.getDetailsAboutRandomAccessMemory()));
     }
 
     /**
@@ -77,7 +82,8 @@ public final class EnvironmentCapturingAssembleClass {
                 "VM Name", System.getProperty("java.vm.name", STR_INSTEAD_NULL),
                 "VM Version", System.getProperty("java.vm.version", STR_INSTEAD_NULL),
                 "VM Specification Name", System.getProperty("java.vm.specification.name", STR_INSTEAD_NULL),
-                "VM Specification Vendor", System.getProperty("java.vm.specification.vendor", STR_INSTEAD_NULL));
+                "VM Specification Vendor",
+                    System.getProperty("java.vm.specification.vendor", STR_INSTEAD_NULL));
     }
 
     /**
@@ -87,9 +93,12 @@ public final class EnvironmentCapturingAssembleClass {
     private static Map<String, Object> gatherSoftwareDetails() {
         return Map.of(
                 "Java", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(gatherJavaDetails()),
-                "OS", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(EnvironmentHardwareClass.getDetailsAboutOperatingSystem()),
-                "Network", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(EnvironmentHardwareClass.getDetailsAboutNetwork()),
-                "Storage", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(OshiUsageClass.getDetailsAboutAvailableStoragePartitions()));
+                "OS", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(
+                        EnvironmentHardwareClass.getDetailsAboutOperatingSystem()),
+                "Network", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(
+                        EnvironmentHardwareClass.getDetailsAboutNetwork()),
+                "Storage", BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(
+                        OshiUsageClass.getDetailsAboutAvailableStoragePartitions()));
     }
 
     /**
@@ -123,24 +132,27 @@ public final class EnvironmentCapturingAssembleClass {
 
     /**
      * Capturing current Environment details
-     * 
+     *
      * @return String
      */
     public static @NonNull String packageCurrentEnvironmentDetailsIntoJson() {
         final StringBuilder strJsonString = new StringBuilder(1000);
         final String strFeedback = "Capturing information...";
         LogExposureClass.LOGGER.info(strFeedback);
-        final String strHardware = BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(gatherHardwareDetails());
+        final String strHardware
+                = BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(gatherHardwareDetails());
         strJsonString.append("{\"Hardware\":").append(strHardware);
         final String strFeedbackH = "I just captured Hardware information...";
         LogExposureClass.LOGGER.debug(strFeedbackH);
-        final String strSoftware = BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(gatherSoftwareDetails());
+        final String strSoftware
+                = BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(gatherSoftwareDetails());
         strJsonString.append(",\"Software\":").append(strSoftware);
         final String strFeedbackS = "I just captured Software information...";
         LogExposureClass.LOGGER.debug(strFeedbackS);
         final String strAppDetails = ProjectClass.ApplicationSubClass.getApplicationDetails();
         strJsonString.append(',').append(strAppDetails);
-        final String strEnvironment = BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(gatherEnvironmentDetails());
+        final String strEnvironment
+                = BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(gatherEnvironmentDetails());
         final String strFeedbackEnv = "I just captured Environment information...";
         LogExposureClass.LOGGER.debug(strFeedbackEnv);
         strJsonString.append(",\"Environment\":").append(strEnvironment).append('}');
@@ -149,23 +161,37 @@ public final class EnvironmentCapturingAssembleClass {
 
     /**
      * Capturing current Environment details
-     * 
+     *
      * @return String
      */
     public static @NonNull List<Properties> packageCurrentEnvironmentDetailsIntoListOfProperties() {
         final List<Properties> resultReleases = new ArrayList<>();
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Environment", gatherEnvironmentDetails()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Hardware - CPU", EnvironmentHardwareClass.getDetailsAboutCentralProcessorUnit()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Hardware - GPU", EnvironmentHardwareClass.getDetailsAboutGraphicCards()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Hardware - Mainboard", EnvironmentHardwareClass.MotherboardAndSystemSubClass.getDetailsAboutMainboard()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Hardware - Monitors", EnvironmentHardwareClass.getDetailsAboutMonitor()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Hardware - Network Interfaces", EnvironmentHardwareClass.getDetailsAboutNetworkInterfaces()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Hardware - RAM", EnvironmentHardwareClass.getDetailsAboutRandomAccessMemory()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Software - Java", gatherJavaDetails()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Software - OS", EnvironmentHardwareClass.getDetailsAboutOperatingSystem()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Software - Network", EnvironmentHardwareClass.getDetailsAboutNetwork()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Software - Storage", OshiUsageClass.getDetailsAboutAvailableStoragePartitions()));
-        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties("Application", ProjectClass.ApplicationSubClass.getApplicationDetailsIntoMap()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Environment", gatherEnvironmentDetails()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Hardware - CPU", EnvironmentHardwareClass.getDetailsAboutCentralProcessorUnit()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Hardware - GPU", EnvironmentHardwareClass.getDetailsAboutGraphicCards()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Hardware - Mainboard",
+                EnvironmentHardwareClass.MotherboardAndSystemSubClass.getDetailsAboutMainboard()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Hardware - Monitors", EnvironmentHardwareClass.getDetailsAboutMonitor()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Hardware - Network Interfaces",
+                EnvironmentHardwareClass.getDetailsAboutNetworkInterfaces()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Hardware - RAM", EnvironmentHardwareClass.getDetailsAboutRandomAccessMemory()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Software - Java", gatherJavaDetails()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Software - OS", EnvironmentHardwareClass.getDetailsAboutOperatingSystem()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Software - Network", EnvironmentHardwareClass.getDetailsAboutNetwork()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Software - Storage", OshiUsageClass.getDetailsAboutAvailableStoragePartitions()));
+        resultReleases.addAll(BasicStructuresClass.ListAndMapSubClass.convertMapOfStringsIntoListOfProperties(
+                "Application", ProjectClass.ApplicationSubClass.getApplicationDetailsIntoMap()));
         return resultReleases;
     }
 

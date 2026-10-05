@@ -1,16 +1,15 @@
-package io.github.dgp_eu.software_releases.cli;
+package io.github.pgdro.software.releases.cli.commands;
 
+import io.github.pgdro.tools.core.CommonInteractiveClass;
+import io.github.pgdro.tools.core.ConfigurationClass;
+import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.dynamic.JsonOperationsClass;
+import io.github.pgdro.tools.dynamic.database.DatabaseSpecificMySqlClass;
+import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSnowflakeClass;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
-import io.github.dgp_eu.tools.core.CommonInteractiveClass;
-import io.github.dgp_eu.tools.core.ConfigurationClass;
-import io.github.dgp_eu.tools.core.LogExposureClass;
-import io.github.dgp_eu.tools.dynamic.JsonOperationsClass;
-import io.github.dgp_eu.tools.dynamic.database.DatabaseSpecificMySqlClass;
-import io.github.dgp_eu.tools.dynamic.database.DatabaseSpecificSnowflakeClass;
 import org.jspecify.annotations.NonNull;
 import picocli.CommandLine;
 import tools.jackson.databind.JsonNode;
@@ -20,12 +19,12 @@ import tools.jackson.databind.JsonNode;
  */
 @CommandLine.Command(name = "GetInformationFromDatabase",
                      description = "Gets information from Database into Log file")
-class GetInformationFromDatabase implements Runnable {
+public class GetInformationFromDatabase implements Runnable {
 
     /**
      * Known Database Types
      */
-	/* default */ static final List<String> LST_DB_TYPES = Arrays.asList(
+    /* default */ static final List<String> LST_DB_TYPES = Arrays.asList(
         "MySQL",
         "Snowflake"
     );
@@ -33,7 +32,7 @@ class GetInformationFromDatabase implements Runnable {
     /**
      * Known Information Types
      */
-	/* default */ static final List<String> LST_INFO_TYPES = Arrays.asList(
+    /* default */ static final List<String> LST_INFO_TYPES = Arrays.asList(
         "Columns",
         "Databases",
         "Schemas",
@@ -87,12 +86,12 @@ class GetInformationFromDatabase implements Runnable {
     private static @NonNull Properties getEnvironmentVariableValueForMySql() {
         final Properties properties = new Properties();
         final String envValue = ConfigurationClass.getEnvironmentVariableValue("MYSQL");
-        final JsonNode ndMySQL = JsonOperationsClass.getJsonFileNodes(envValue);
-        properties.put("ServerName", JsonOperationsClass.getJsonValue(ndMySQL, "/ServerName"));
-        properties.put("Port", JsonOperationsClass.getJsonValue(ndMySQL, "/Port"));
-        properties.put("Username", JsonOperationsClass.getJsonValue(ndMySQL, "/Username"));
-        properties.put("Password", JsonOperationsClass.getJsonValue(ndMySQL, "/Password"));
-        properties.put("ServerTimezone", JsonOperationsClass.getJsonValue(ndMySQL, "/ServerTimezone"));
+        final JsonNode ndMySql = JsonOperationsClass.getJsonFileNodes(envValue);
+        properties.put("ServerName", JsonOperationsClass.getJsonValue(ndMySql, "/ServerName"));
+        properties.put("Port", JsonOperationsClass.getJsonValue(ndMySql, "/Port"));
+        properties.put("Username", JsonOperationsClass.getJsonValue(ndMySql, "/Username"));
+        properties.put("Password", JsonOperationsClass.getJsonValue(ndMySql, "/Password"));
+        properties.put("ServerTimezone", JsonOperationsClass.getJsonValue(ndMySql, "/ServerTimezone"));
         return properties;
     }
 
@@ -112,12 +111,21 @@ class GetInformationFromDatabase implements Runnable {
                 DatabaseSpecificSnowflakeClass.performSnowflakePreDefinedAction(strLclInfoType, properties);
                 break;
             default:
-                final String strFeedback = String.format("Unknown %s argument received in %s, do not know what to do with it, therefore will quit, bye!", strDatabaseType, StackWalker.getInstance().walk(frames -> frames.findFirst().map(frame -> frame.getClassName() + "." + frame.getMethodName()).orElse(LogExposureClass.STR_I18N_UNKN)));
+                final String strFeedback = String.format(
+                        "Unknown %s argument received in %s, do not know what to do with it, therefore will quit, bye!",
+                        strDatabaseType,
+                        StackWalker.getInstance().walk(frames
+                                -> frames.findFirst().map(frame
+                                -> frame.getClassName() + "." + frame.getMethodName())
+                                .orElse(LogExposureClass.STR_I18N_UNKN)));
                 LogExposureClass.LOGGER.error(strFeedback);
                 break;
         }
     }
 
+    /**
+     * Main logic for the command
+     */
     @Override
     public void run() {
         if (!LST_DB_TYPES.contains(strDbType)) {
@@ -139,6 +147,7 @@ class GetInformationFromDatabase implements Runnable {
      * Constructor
      */
     protected GetInformationFromDatabase() {
-        super();
+        // intentionally left blank
     }
+
 }

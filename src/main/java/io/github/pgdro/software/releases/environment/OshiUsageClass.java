@@ -1,15 +1,14 @@
 /*
  * Copyright 2026 Daniel-Gheorghe Popiniuc
  */
-package io.github.dgp_eu.software_releases.environment;
+package io.github.pgdro.software.releases.environment;
 
+import io.github.pgdro.tools.core.BasicStructuresClass;
+import io.github.pgdro.tools.core.ConfigurationClass;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import io.github.dgp_eu.tools.core.BasicStructuresClass;
-import io.github.dgp_eu.tools.core.ConfigurationClass;
 import org.jspecify.annotations.NonNull;
 import oshi.ffm.SystemInfo;
 import oshi.hardware.Baseboard;
@@ -72,7 +71,7 @@ public final class OshiUsageClass {
         final Map<String, Object> arrayAttributes = new ConcurrentHashMap<>();
         final FileSystem osFileSystem = SoftwareSubClass.getOshiFileSystem();
         final List<OSFileStore> osFileStores = osFileSystem.getFileStores();
-        for(final OSFileStore fileStore : osFileStores) {
+        for (final OSFileStore fileStore : osFileStores) {
             final String strIdentifier = "Partition UUID#" + fileStore.getUUID() + " ";
             arrayAttributes.putAll(Map.of(
                     strIdentifier + ConfigurationClass.STR_DESCRIPTION, fileStore.getDescription(),
@@ -96,7 +95,7 @@ public final class OshiUsageClass {
     public static @NonNull String getNetworkPhysicalMediumType(final int intPhysMedType) {
         return BasicStructuresClass.ListAndMapSubClass.getMapIntoJsonString(
                 Map.of("Numeric", intPhysMedType,
-                        ConfigurationClass.STR_NAME, 
+                        ConfigurationClass.STR_NAME,
                         MEDIUM_TYPES.getOrDefault(intPhysMedType, "Unknown"))
         );
     }

@@ -1,4 +1,4 @@
-package io.github.dgp_eu.software_releases;
+package io.github.pgdro.software_releases;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import io.github.dgp_eu.tools.core.BasicStructuresClass;
+import io.github.pgdro.tools.core.BasicStructuresClass;
+import io.github.pgdro.software.releases.RemoteInformationRetrievalClass;
 
 /**
  * Testing for RemoteInformationRetrievalClass

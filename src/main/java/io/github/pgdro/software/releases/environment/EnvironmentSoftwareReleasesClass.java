@@ -1,27 +1,26 @@
-package io.github.dgp_eu.software_releases.environment;
+package io.github.pgdro.software.releases.environment;
 
+import io.github.pgdro.software.releases.WebClass;
+import io.github.pgdro.tools.core.BasicStructuresClass;
+import io.github.pgdro.tools.core.ConfigurationClass;
+import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.dynamic.database.DatabaseOperationsClass;
+import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import io.github.dgp_eu.software_releases.WebClass;
-import io.github.dgp_eu.tools.core.BasicStructuresClass;
-import io.github.dgp_eu.tools.core.ConfigurationClass;
-import io.github.dgp_eu.tools.core.LogExposureClass;
-import io.github.dgp_eu.tools.dynamic.database.DatabaseOperationsClass;
-import io.github.dgp_eu.tools.dynamic.database.DatabaseSpecificSqLiteClass;
 import org.jspecify.annotations.NonNull;
 
 /**
  * Handling Software releases logic
  */
-public final class EnvironmentSoftwareReleasesSubClass {
+public final class EnvironmentSoftwareReleasesClass {
 
     // Private constructor to prevent instantiation
-    private EnvironmentSoftwareReleasesSubClass() {
+    private EnvironmentSoftwareReleasesClass() {
         // intentional empty
     }
 
@@ -112,12 +111,23 @@ public final class EnvironmentSoftwareReleasesSubClass {
     private static @NonNull List<Properties> getSoftwareReleasesFromDatabase() {
         List<Properties> resultReleases = new ArrayList<>();
         try (Connection objConnection = DatabaseSpecificSqLiteClass.getSqLiteConnection();
-             Statement objStatement = DatabaseOperationsClass.ConnectivitySubClass.createSqlStatement(ConfigurationClass.STR_SQLITE, objConnection)) {
-            final String queryToUse = DatabaseOperationsClass.getPreDefinedQuery(ConfigurationClass.STR_SQLITE, "ReleasesListProductBranches");
-            final Properties rsProperties = DatabaseOperationsClass.packageResultSetProperties(WebClass.STR_SOFT_RELEASES, queryToUse);
-            resultReleases = DatabaseOperationsClass.ResultSettingSubClass.getResultSetStandardized(objStatement, rsProperties, new Properties());
+             Statement objStatement = DatabaseOperationsClass.ConnectivitySubClass.createSqlStatement(
+                     ConfigurationClass.STR_SQLITE,
+                     objConnection)) {
+            final String queryToUse = DatabaseOperationsClass.getPreDefinedQuery(
+                    ConfigurationClass.STR_SQLITE,
+                    "ReleasesListProductBranches");
+            final Properties rsProperties = DatabaseOperationsClass.packageResultSetProperties(
+                    WebClass.STR_SOFT_RELEASES,
+                    queryToUse);
+            resultReleases = DatabaseOperationsClass.ResultSettingSubClass.getResultSetStandardized(
+                    objStatement,
+                    rsProperties,
+                    new Properties());
         } catch (SQLException e) {
-            final String strFeedbackErr = String.format("%s connection has failed %s", ConfigurationClass.STR_SQLITE, e.getLocalizedMessage());
+            final String strFeedbackErr = String.format("%s connection has failed %s",
+                    ConfigurationClass.STR_SQLITE,
+                    e.getLocalizedMessage());
             LogExposureClass.LOGGER.debug(strFeedbackErr);
         }
         return resultReleases;

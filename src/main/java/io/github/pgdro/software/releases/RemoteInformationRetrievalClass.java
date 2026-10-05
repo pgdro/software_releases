@@ -1,8 +1,12 @@
 /*
  * Copyright 2026 Daniel-Gheorghe Popiniuc
  */
-package io.github.dgp_eu.software_releases;
+package io.github.pgdro.software.releases;
 
+import io.github.pgdro.tools.core.ConfigurationClass;
+import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.core.RegularExpressionsClass;
+import io.github.pgdro.tools.core.time.TimingClass;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -18,20 +22,13 @@ import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Properties;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.jspecify.annotations.NonNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-
-import io.github.dgp_eu.tools.core.ConfigurationClass;
-import io.github.dgp_eu.tools.core.LogExposureClass;
-import io.github.dgp_eu.tools.core.RegularExpressionsClass;
-import io.github.dgp_eu.tools.core.time.TimingClass;
 
 /**
  * XML management
@@ -49,8 +46,12 @@ public final class RemoteInformationRetrievalClass {
          * @return URL to Central Maven Repository
          */
         private static URL buildMavenCentralRepositoryUniformResourceLocatorFromPackage(final String inPackage) {
-            final String strWebSite = RegularExpressionsClass.buildCentralMavenRepositoryUniformResourceLocator(inPackage) + "maven-metadata.xml";
-            final String strFeedback = String.format("Uniform Resource Locator from Central Maven Repository for %s package is: %s", inPackage, strWebSite);
+            final String strWebSite = RegularExpressionsClass
+                    .buildCentralMavenRepositoryUniformResourceLocator(inPackage) + "maven-metadata.xml";
+            final String strFeedback = String.format(
+                    "Uniform Resource Locator from Central Maven Repository for %s package is: %s",
+                    inPackage,
+                    strWebSite);
             LogExposureClass.LOGGER.info(strFeedback);
             return buildUniformResourceLocatorFromString(strWebSite);
         }
@@ -64,17 +65,23 @@ public final class RemoteInformationRetrievalClass {
             Document doc = null;
             final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             try {
-                docBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-                docBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-                docBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-                docBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+                docBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",
+                        true);
+                docBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities",
+                        false);
+                docBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities",
+                        false);
+                docBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",
+                        false);
                 docBuilderFactory.setExpandEntityReferences(false);
                 // and these as well, per Timothy Morgan's 2014
                 // paper: "XML Schema, DTD, and Entity Attacks"
                 docBuilderFactory.setXIncludeAware(false);
                 doc = parseDocumentFromInputStream(inStream, docBuilderFactory);
             } catch (ParserConfigurationException e) {
-                final String strFeedback = "Parser Configuration Exception while attempting to read remote XML from an URL as " + Arrays.toString(e.getStackTrace());
+                final String strFeedback = "ParserConfigurationException while "
+                        + "attempting to read remote XML from an URL as "
+                        + Arrays.toString(e.getStackTrace());
                 LogExposureClass.LOGGER.error(strFeedback);
             }
             return doc;
@@ -100,7 +107,8 @@ public final class RemoteInformationRetrievalClass {
                     }
                 }
             } catch (IOException e) {
-                final String strFeedback = "IO Exception while attempting to read remote XML from an URL as " + Arrays.toString(e.getStackTrace());
+                final String strFeedback = "IO Exception while attempting to read remote XML from an URL as "
+                        + Arrays.toString(e.getStackTrace());
                 LogExposureClass.LOGGER.error(strFeedback);
             }
             return strLatestVersion;
@@ -112,19 +120,25 @@ public final class RemoteInformationRetrievalClass {
          * @param docBuilderFactory DocumentBuilderFactory
          * @return Document
          */
-        private static Document parseDocumentFromInputStream(final InputStream inStream, final @NonNull DocumentBuilderFactory docBuilderFactory) {
+        private static Document parseDocumentFromInputStream(
+                final InputStream inStream,
+                final @NonNull DocumentBuilderFactory docBuilderFactory) {
             Document doc = null;
             try {
                 final DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
                 doc = docBuilder.parse(inStream);
             } catch (ParserConfigurationException e) {
-                final String strFeedback = "ParserConfigurationException was thrown while attempting to read remote XML from an URL... " + Arrays.toString(e.getStackTrace());
+                final String strFeedback = "ParserConfigurationException thrown "
+                        + "while attempting to read remote XML from an URL... "
+                        + Arrays.toString(e.getStackTrace());
                 LogExposureClass.LOGGER.error(strFeedback);
             } catch (SAXException e) {
-                final String strFeedback = "SAXException thrown... DOCTYPE was passed into the XML document... " + Arrays.toString(e.getStackTrace());
+                final String strFeedback = "SAXException thrown... DOCTYPE was passed into the XML document... "
+                        + Arrays.toString(e.getStackTrace());
                 LogExposureClass.LOGGER.error(strFeedback);
             } catch (IOException e) {
-                final String strFeedback = "IOException occurred, XXE may still be possible... " + Arrays.toString(e.getStackTrace());
+                final String strFeedback = "IOException occurred, XXE may still be possible... "
+                        + Arrays.toString(e.getStackTrace());
                 LogExposureClass.LOGGER.error(strFeedback);
             }
             return doc;
@@ -169,7 +183,9 @@ public final class RemoteInformationRetrievalClass {
          * @throws IOException error management for I/O
          * @throws InterruptedException error management for Interruption
          */
-        private static String getRemoteFileContent(final String strRemoteFileUrl, final @NonNull Builder inBuilder) throws IOException, InterruptedException {
+        private static String getRemoteFileContent(
+                final String strRemoteFileUrl,
+                final @NonNull Builder inBuilder) throws IOException, InterruptedException {
             final HttpRequest requestContent = inBuilder
                     .GET()
                     .build();
@@ -195,7 +211,9 @@ public final class RemoteInformationRetrievalClass {
          * @throws IOException error management for I/O
          * @throws InterruptedException error management for Interruption
          */
-        private static @NonNull Properties getRemoteFileHeaderAttributes(final String strRemoteFileUrl, final @NonNull Builder inBuilder) throws IOException, InterruptedException {
+        private static @NonNull Properties getRemoteFileHeaderAttributes(
+                final String strRemoteFileUrl,
+                final @NonNull Builder inBuilder) throws IOException, InterruptedException {
             final Properties outProperties = new Properties();
             final HttpRequest requestHeader = inBuilder
                     .HEAD()
@@ -211,9 +229,11 @@ public final class RemoteInformationRetrievalClass {
                         .firstValue("Last-Modified")
                         .orElse("");
                 if (!lastModified.isBlank() ) {
-                    final String lastModifiedTs = TimingClass.LocalizationSubClass.convertDateOrTimestampFormats(lastModified,
-                            DateTimeFormatter.RFC_1123_DATE_TIME,
-                            DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                    final String lastModifiedTs = TimingClass
+                            .LocalizationSubClass
+                            .convertDateOrTimestampFormats(lastModified,
+                                DateTimeFormatter.RFC_1123_DATE_TIME,
+                                DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                     outProperties.put("Last Modified", lastModifiedTs);
                 }
                 final long fileSize = responseHeader.headers()
@@ -237,7 +257,9 @@ public final class RemoteInformationRetrievalClass {
          * @param inWhat input Method
          * @return Properties with one or multiple values
          */
-        public static @NonNull Properties requestHttpFile(final String strRemoteFileUrl, final @NonNull String inWhat) {
+        public static @NonNull Properties requestHttpFile(
+                final String strRemoteFileUrl,
+                final @NonNull String inWhat) {
             final Properties fileProperties = new Properties();
             final URI inputUri = URI.create(strRemoteFileUrl);
             try {
@@ -259,7 +281,12 @@ public final class RemoteInformationRetrievalClass {
                         }
                         break;
                     default:
-                        final String strFeedbackErr = LogExposureClass.getUnsupportedFeatures(inWhat, StackWalker.getInstance().walk(frames -> frames.findFirst().map(frame -> frame.getClassName() + "." + frame.getMethodName()).orElse(LogExposureClass.STR_I18N_UNKN)));
+                        final String strFeedbackErr = LogExposureClass.getUnsupportedFeatures(
+                                inWhat,
+                                StackWalker.getInstance().walk(frames
+                                        -> frames.findFirst().map(frame
+                                        -> frame.getClassName() + "." + frame.getMethodName())
+                                        .orElse(LogExposureClass.STR_I18N_UNKN)));
                         throw new UnsupportedOperationException(strFeedbackErr);
                 }
             } catch (InterruptedException e) {
@@ -267,7 +294,8 @@ public final class RemoteInformationRetrievalClass {
                 LogExposureClass.LOGGER.warn(strFeedback);
                 Thread.currentThread().interrupt(); // NOPMD by Daniel Popiniuc on 26.09.2026, 16:47
             } catch (IOException e) {
-                final String strFeedback = "Input/Output Exception while attempting to read remote XML from an URL as " + Arrays.toString(e.getStackTrace());
+                final String strFeedback = "Input/Output Exception while attempting to read remote XML from an URL as "
+                        + Arrays.toString(e.getStackTrace());
                 LogExposureClass.LOGGER.error(strFeedback);
             }
             return fileProperties;
@@ -300,7 +328,8 @@ public final class RemoteInformationRetrievalClass {
         try {
             urlReturn = URI.create(strWebSite).toURL();
         } catch (MalformedURLException e) {
-            final String strFeedback = "Malformed Exception encountered on URL as " + Arrays.toString(e.getStackTrace());
+            final String strFeedback = "Malformed Exception encountered on URL as "
+                    + Arrays.toString(e.getStackTrace());
             LogExposureClass.LOGGER.error(strFeedback);
         }
         return urlReturn;

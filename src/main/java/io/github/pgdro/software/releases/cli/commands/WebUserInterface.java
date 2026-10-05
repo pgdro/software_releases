@@ -1,9 +1,9 @@
-package io.github.dgp_eu.software_releases.cli;
+package io.github.pgdro.software.releases.cli.commands;
 
-import io.github.dgp_eu.software_releases.WebClass;
-import io.github.dgp_eu.tools.core.CommonInteractiveClass;
-import io.github.dgp_eu.tools.dynamic.database.DatabaseSpecificSqLiteClass;
-import io.github.dgp_eu.tools.dynamic.web.UndertowClass;
+import io.github.pgdro.software.releases.WebClass;
+import io.github.pgdro.tools.core.CommonInteractiveClass;
+import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;
+import io.github.pgdro.tools.dynamic.web.UndertowClass;
 import picocli.CommandLine;
 import picocli.CommandLine.Mixin;
 
@@ -13,28 +13,31 @@ import picocli.CommandLine.Mixin;
 @CommandLine.Command(
         name = "WebUserInterface",
         description = "Initiate Web User Interface")
-class WebUserInterface implements Runnable {
+public class WebUserInterface implements Runnable {
 
     /**
      * adds the options defined in
      * CommonInteractiveClass.LocalDatabaseFileMixinClass to this command
      */
     @Mixin
-    private final CommonInteractiveClass.LocalDatabaseFileMixinClass optLocalDbFile = new CommonInteractiveClass.LocalDatabaseFileMixinClass();
+    private final CommonInteractiveClass.LocalDatabaseFileMixinClass optLocalDbFile
+            = new CommonInteractiveClass.LocalDatabaseFileMixinClass();
 
     /**
      * adds the options defined in
      * CommonInteractiveClass.PortOptionMixinClass to this command
      */
     @Mixin
-    private final CommonInteractiveClass.PortOptionMixinClass optPortNumber = new CommonInteractiveClass.PortOptionMixinClass();
+    private final CommonInteractiveClass.PortOptionMixinClass optPortNumber
+            = new CommonInteractiveClass.PortOptionMixinClass();
 
     /**
      * adds the options defined in
      * CommonInteractiveClass.FolderNameOptionMixinClass to this command
      */
     @Mixin
-    private final CommonInteractiveClass.FolderNameOptionMixinClass optFolderNames = new CommonInteractiveClass.FolderNameOptionMixinClass();
+    private final CommonInteractiveClass.FolderNameOptionMixinClass optFolderNames
+            = new CommonInteractiveClass.FolderNameOptionMixinClass();
 
     /**
      * String for out FileName
@@ -46,6 +49,9 @@ class WebUserInterface implements Runnable {
             required = true)
     private String strJsonLocations;
 
+    /**
+     * Main logic
+     */
     @Override
     public void run() {
         UndertowClass.setWebPort(String.valueOf(optPortNumber.getPortNumber()));

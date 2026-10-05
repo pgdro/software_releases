@@ -1,5 +1,20 @@
-package io.github.dgp_eu.software_releases;
+package io.github.pgdro.software.releases;
 
+import gg.jte.output.Utf8ByteOutput;
+import io.github.pgdro.software.releases.environment.EnvironmentCapturingAssembleClass;
+import io.github.pgdro.software.releases.environment.EnvironmentSoftwareReleasesClass;
+import io.github.pgdro.tools.core.BasicStructuresClass;
+import io.github.pgdro.tools.core.ConfigurationClass;
+import io.github.pgdro.tools.core.FileStatisticsClass;
+import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.core.time.TimingClass;
+import io.github.pgdro.tools.dynamic.JsonOperationsClass;
+import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;
+import io.github.pgdro.tools.dynamic.web.HtmlClass;
+import io.github.pgdro.tools.dynamic.web.JavaTemplateRenderingClass;
+import io.undertow.io.Sender;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HeaderMap;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -7,22 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.SequencedMap;
-
-import gg.jte.output.Utf8ByteOutput;
-import io.github.dgp_eu.software_releases.environment.EnvironmentCapturingAssembleClass;
-import io.github.dgp_eu.software_releases.environment.EnvironmentSoftwareReleasesSubClass;
-import io.github.dgp_eu.tools.core.BasicStructuresClass;
-import io.github.dgp_eu.tools.core.ConfigurationClass;
-import io.github.dgp_eu.tools.core.FileStatisticsClass;
-import io.github.dgp_eu.tools.core.LogExposureClass;
-import io.github.dgp_eu.tools.core.time.TimingClass;
-import io.github.dgp_eu.tools.dynamic.JsonOperationsClass;
-import io.github.dgp_eu.tools.dynamic.database.DatabaseSpecificSqLiteClass;
-import io.github.dgp_eu.tools.dynamic.web.HtmlClass;
-import io.github.dgp_eu.tools.dynamic.web.JavaTemplateRenderingClass;
-import io.undertow.io.Sender;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HeaderMap;
 import org.jspecify.annotations.NonNull;
 import tools.jackson.databind.JsonNode;
 
@@ -43,7 +42,8 @@ public final class ContentClass {
     private static @NonNull String getEnvironmentDetailsAsHtmlTable() {
         final Properties objFeatures = new Properties();
         objFeatures.put(ConfigurationClass.STR_NEW_TAB, ConfigurationClass.STR_CATEGORY);
-        final List<Properties> envDetails = EnvironmentCapturingAssembleClass.packageCurrentEnvironmentDetailsIntoListOfProperties();
+        final List<Properties> envDetails = EnvironmentCapturingAssembleClass
+                .packageCurrentEnvironmentDetailsIntoListOfProperties();
         final List<String> desiredOrder = List.of(ConfigurationClass.STR_CATEGORY, "Element", "Value");
         final List<SequencedMap<Object, Object>> orderedList = envDetails.stream()
                 .map(prop -> BasicStructuresClass.ListAndMapSubClass.sortProperties(prop, desiredOrder))
@@ -61,14 +61,22 @@ public final class ContentClass {
         FileStatisticsClass.setChecksumAlgorithms(inAlgorithms);
         final String[] folderNames = WebClass.getFolderNames();
         final List<Properties> foldersStatistics = new ArrayList<>();
-        for(final String crtFolderName: folderNames) {
+        for (final String crtFolderName: folderNames) {
             final String strFeedback = String.format("Will process folder %s", crtFolderName);
             LogExposureClass.LOGGER.info(strFeedback);
             final ZonedDateTime refTimeStamp = TimingClass.getCurrentZonedDateTime();
-            final List<Properties> crtFileStatistics = FileStatisticsClass.getFileStatisticsIntoListOfProperties(crtFolderName, refTimeStamp);
+            final List<Properties> crtFileStatistics = FileStatisticsClass
+                    .getFileStatisticsIntoListOfProperties(crtFolderName, refTimeStamp);
             foldersStatistics.addAll(crtFileStatistics);
         }
-        final List<String> desiredOrder = List.of("Folder", "File", "Size [bytes]", ConfigurationClass.STR_SIZE, "SHA-256", "Last Modified Timestamp", "Last Modified Aging");
+        final List<String> desiredOrder = List.of(
+                "Folder",
+                "File",
+                "Size [bytes]",
+                ConfigurationClass.STR_SIZE,
+                "SHA-256",
+                "Last Modified Timestamp",
+                "Last Modified Aging");
         final List<SequencedMap<Object, Object>> orderedList = foldersStatistics.stream()
                 .map(prop -> BasicStructuresClass.ListAndMapSubClass.sortProperties(prop, desiredOrder))
                 .toList();
@@ -87,13 +95,16 @@ public final class ContentClass {
             SunClass.setZoneId(crtLocation.get("TimeZoneName").toString().replace("\"", ""));
             SunClass.setLatitude(Double.parseDouble(crtLocation.get("Latitude").toString()));
             SunClass.setLongitude(Double.parseDouble(crtLocation.get("Longitude").toString()));
-            final String strTabTitle = crtLocation.get("LocationPlaceDivisionCountry").toString().replace("\"", "");
-            final Map<String, Object> mapSunRiseAndSet = SunClass.getSunRiseAndSet(strTabTitle);
+            final String strTabTitle
+                    = crtLocation.get("LocationPlaceDivisionCountry").toString().replace("\"", "");
+            final Map<String, String> mapSunRiseAndSet = SunClass.getSunRiseAndSet(strTabTitle);
             final String strFeedback = String.format("LocationPlaceDivisionCountry is %s and has details as %s",
                     strTabTitle,
                     mapSunRiseAndSet.toString());
             LogExposureClass.LOGGER.debug(strFeedback);
-            final SequencedMap<String, Object> sortedSun = BasicStructuresClass.ListAndMapSubClass.sortMapByKey(mapSunRiseAndSet);
+            final SequencedMap<String, String> sortedSun = BasicStructuresClass
+                    .ListAndMapSubClass
+                    .sortMap(mapSunRiseAndSet, true, true);
             sbReturn.append("<div class=\"tabbertab\" title=\"")
                     .append(strTabTitle)
                     .append("\"><table style=\"float:left;\">");
@@ -120,7 +131,7 @@ public final class ContentClass {
      */
     private static @NonNull String getSoftwareReleasesIntoHtmlTable() {
         String strReturn = "No software releases found.";
-        final List<Properties> softwareReleases = EnvironmentSoftwareReleasesSubClass.consolidateSoftwareReleases();
+        final List<Properties> softwareReleases = EnvironmentSoftwareReleasesClass.consolidateSoftwareReleases();
         if (!softwareReleases.isEmpty()) {
             final List<String> desiredOrder = List.of("Organization", "Product", "Version", "Date", "Files");
             final List<SequencedMap<Object, Object>> orderedList = softwareReleases.stream()

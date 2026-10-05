@@ -1,9 +1,13 @@
 /**
  * Copyright 2026 Daniel-Gheorghe Popiniuc
  */
-package io.github.dgp_eu.software_releases.cli;
+package io.github.pgdro.software.releases.cli;
 
-import io.github.dgp_eu.tools.core.CommonInteractiveClass;
+import io.github.pgdro.software.releases.cli.commands.CaptureEnvironmentDetailsIntoJsonFile;
+import io.github.pgdro.software.releases.cli.commands.GetInformationFromDatabase;
+import io.github.pgdro.software.releases.cli.commands.GetRemoteMavenPackageDetails;
+import io.github.pgdro.software.releases.cli.commands.WebUserInterface;
+import io.github.pgdro.tools.core.CommonInteractiveClass;
 import picocli.CommandLine;
 
 /**
@@ -35,7 +39,7 @@ public final class ApplicationSoftwareReleases {
 
     /** Constructor */
     private ApplicationSoftwareReleases() {
-        super();
+        // intentionally left blank
     }
 
 }

@@ -1,28 +1,26 @@
 /** Copyright 2026 Daniel-Gheorghe Popiniuc */
-package io.github.dgp_eu.software_releases;
+package io.github.pgdro.software.releases;
 
+import gg.jte.TemplateEngine;
+import gg.jte.output.Utf8ByteOutput;
+import io.github.pgdro.tools.core.ConfigurationClass;
+import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.core.ProjectClass;
+import io.github.pgdro.tools.core.time.TimingClass;
+import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;
+import io.github.pgdro.tools.dynamic.web.HtmlClass;
+import io.github.pgdro.tools.dynamic.web.JavaTemplateRenderingClass;
+import io.github.pgdro.tools.dynamic.web.UndertowClass;
+import io.github.pgdro.tools.dynamic.web.UndertowParametersClass;
+import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.SequencedMap;
-
 import org.jspecify.annotations.NonNull;
-
-import gg.jte.TemplateEngine;
-import gg.jte.output.Utf8ByteOutput;
-import io.github.dgp_eu.tools.core.ConfigurationClass;
-import io.github.dgp_eu.tools.core.LogExposureClass;
-import io.github.dgp_eu.tools.core.ProjectClass;
-import io.github.dgp_eu.tools.core.time.TimingClass;
-import io.github.dgp_eu.tools.dynamic.database.DatabaseSpecificSqLiteClass;
-import io.github.dgp_eu.tools.dynamic.web.JavaTemplateRenderingClass;
-import io.github.dgp_eu.tools.dynamic.web.HtmlClass;
-import io.github.dgp_eu.tools.dynamic.web.UndertowClass;
-import io.github.dgp_eu.tools.dynamic.web.UndertowParametersClass;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
 
 /**
  * Web interface class
@@ -107,10 +105,15 @@ public final class WebClass {
      */
     private static gg.jte.Content handleInfoContext(final String page) {
         return output -> output.writeContent( switch (page) {
-            case ConfigurationClass.STR_ENV_DTLS     -> HtmlClass.FileInfoSubClass.gatherFileStatistics(Path.of(ProjectClass.getPomFile()));
+            case ConfigurationClass.STR_ENV_DTLS
+                    -> HtmlClass.FileInfoSubClass.gatherFileStatistics(
+                            Path.of(ProjectClass.getPomFile()));
             case ConfigurationClass.STR_SOFTWARE_RLS,
-                    ConfigurationClass.STR_TS        -> HtmlClass.FileInfoSubClass.gatherFileStatistics(Path.of(DatabaseSpecificSqLiteClass.getInternalDatabase()));
-            default                                  -> "<script>document.getElementById('infoContextId').style = 'display:none;';</script>";
+                    ConfigurationClass.STR_TS
+                    -> HtmlClass.FileInfoSubClass.gatherFileStatistics(
+                            Path.of(DatabaseSpecificSqLiteClass.getInternalDatabase()));
+            default
+                    -> "<script>document.getElementById('infoContextId').style = 'display:none;';</script>";
         });
     }
 
@@ -118,6 +121,7 @@ public final class WebClass {
      * Handle web content
      * @return PathHandler web content
      */
+    @NonNull
     public static HttpHandler handleWebContent() {
         return exchange -> {
             final ZonedDateTime startWebTimeStamp = TimingClass.getCurrentZonedDateTime();

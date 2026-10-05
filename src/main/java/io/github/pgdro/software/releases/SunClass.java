@@ -1,8 +1,10 @@
 /*
  * Copyright 2026 Daniel-Gheorghe Popiniuc
  */
-package io.github.dgp_eu.software_releases;
+package io.github.pgdro.software.releases;
 
+import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.core.time.TimingClass;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,9 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import io.github.dgp_eu.tools.core.LogExposureClass;
-import io.github.dgp_eu.tools.core.time.TimingClass;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -35,16 +34,17 @@ public final class SunClass {
     /** ZoneId variable */
     private static ZoneId internalZoneId;
     /** Properties for output */
-    private static final Map<String, Object> MAP_SUN = new ConcurrentHashMap<>();
+    private static final Map<String, String> MAP_SUN = new ConcurrentHashMap<>();
     /** formatter Variable */
-    /* default */ private static final DateTimeFormatter APPLIED_FORMATER = DateTimeFormatter.ofPattern(TimingClass.DATE_TIME_MS_LONG, Locale.US);
+    /* default */ private static final DateTimeFormatter APPLIED_FORMATER
+            = DateTimeFormatter.ofPattern(TimingClass.DATE_TIME_MS_LONG, Locale.US);
 
     /**
      * Calculates Sunrise and Sunset for a given location
      * @param crtLocationDetail location detail as String
      * @return Properties
      */
-    public static Map<String, Object> getSunRiseAndSet(final String crtLocationDetail) {
+    public static Map<String, String> getSunRiseAndSet(final String crtLocationDetail) {
         final ZonedDateTime nowZ = ZonedDateTime.now(internalZoneId);
         MAP_SUN.put("Location [Street, City, Division, Country]", crtLocationDetail);
         MAP_SUN.put("Current Timestamp", nowZ.format(APPLIED_FORMATER));
@@ -62,7 +62,8 @@ public final class SunClass {
         }
         if ((sunrise != null)
             && (sunset != null)) {
-            MAP_SUN.put("Today Light duration", TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunrise, sunset));
+            MAP_SUN.put("Today Light duration",
+                    TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunrise, sunset));
             enhanceSunStatistics(nowZ, sunrise, sunset);
         }
         return MAP_SUN;
@@ -71,10 +72,12 @@ public final class SunClass {
     /**
      * Calculate Sunrise/Sunset
      * @param inNowZ input time-stamp
-     * @param isSunrise boolean if Sunrise 
+     * @param isSunrise boolean if Sunrise
      * @return ZonedDateTime
      */
-    private static ZonedDateTime calculateSunSetOrRise(final @NonNull ZonedDateTime inNowZ, final boolean isSunrise) {
+    private static ZonedDateTime calculateSunSetOrRise(
+            final @NonNull ZonedDateTime inNowZ,
+            final boolean isSunrise) {
         final LocalDate inLocalDate = inNowZ.toLocalDate();
         final int dayOfYear = inLocalDate.getDayOfYear();
         // 1. Convert longitude to hour value and estimate time
@@ -100,18 +103,24 @@ public final class SunClass {
         final double cosDec = Math.cos(Math.asin(sinDec));
         // 6. Local hour angle
         final double cosH = (Math.cos(Math.toRadians(ZENITH))
-                - (sinDec * Math.sin(Math.toRadians(dblLatitude)))) / (cosDec * Math.cos(Math.toRadians(dblLatitude)));
+                - (sinDec * Math.sin(Math.toRadians(dblLatitude))))
+                / (cosDec * Math.cos(Math.toRadians(dblLatitude)));
         ZonedDateTime outZonedDateTime = inNowZ;
         if (cosH >= -1
                 && cosH <= 1) { // only if Sun rises/sets
             // 7. Local mean time
-            final double localMeanHour = (isSunrise ? (360 - Math.toDegrees(Math.acos(cosH))) : Math.toDegrees(Math.acos(cosH))) / 15.0;
+            final double localMeanHour = (isSunrise
+                    ? (360 - Math.toDegrees(Math.acos(cosH)))
+                    : Math.toDegrees(Math.acos(cosH)))
+                    / 15.0;
             final double localMeanTime = localMeanHour + sunRightAscension - (0.065_71 * estimatedTime) - 6.622;
             // 8. UTC time
             final double utcTime = (localMeanTime - lonHour + 24) % 24;
             // 9. Convert to ZonedDateTime
-            final LocalTime finalTime = LocalTime.ofNanoOfDay((long)(utcTime * 3_600_000_000_000L));
-            outZonedDateTime = ZonedDateTime.of(inLocalDate, finalTime, ZoneOffset.UTC).withZoneSameInstant(internalZoneId);
+            final LocalTime finalTime = LocalTime.ofNanoOfDay((long) (utcTime * 3_600_000_000_000L));
+            outZonedDateTime = ZonedDateTime
+                    .of(inLocalDate, finalTime, ZoneOffset.UTC)
+                    .withZoneSameInstant(internalZoneId);
         }
         return outZonedDateTime;
     }
@@ -122,35 +131,48 @@ public final class SunClass {
      * @param sunrise sun rise time
      * @param sunset sun set time
      */
-    private static void enhanceSunStatistics(final @NonNull ZonedDateTime nowZ, final @NonNull ZonedDateTime sunrise, final @NonNull ZonedDateTime sunset) {
+    private static void enhanceSunStatistics(
+            final @NonNull ZonedDateTime nowZ,
+            final @NonNull ZonedDateTime sunrise,
+            final @NonNull ZonedDateTime sunset) {
         final ZonedDateTime yesterdayZ = ZonedDateTime.now(internalZoneId).minusDays(1);
         final ZonedDateTime sunrisePrior = calculateSunSetOrRise(yesterdayZ, true);
         MAP_SUN.put("Yesterday Sunrise", sunrisePrior.format(APPLIED_FORMATER));
         final ZonedDateTime sunsetPrior = calculateSunSetOrRise(yesterdayZ, false);
         MAP_SUN.put("Yesterday Sunset", sunsetPrior.format(APPLIED_FORMATER));
-        MAP_SUN.put("Yesterday Light duration", TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunrisePrior, sunsetPrior));
-        MAP_SUN.put("Yesterday Night Duration", TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunsetPrior, sunrise));
+        MAP_SUN.put("Yesterday Light duration",
+                TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunrisePrior, sunsetPrior));
+        MAP_SUN.put("Yesterday Night Duration",
+                TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunsetPrior, sunrise));
         final ZonedDateTime tomorrowZ = ZonedDateTime.now(internalZoneId).plusDays(1);
         final ZonedDateTime sunriseNext = calculateSunSetOrRise(tomorrowZ, true);
         MAP_SUN.put("Tomorrow Sunrise", sunriseNext.format(APPLIED_FORMATER));
         final ZonedDateTime sunsetNext = calculateSunSetOrRise(tomorrowZ, false);
         MAP_SUN.put("Tomorrow Sunset", sunsetNext.format(APPLIED_FORMATER));
-        MAP_SUN.put("Tomorrow Light duration", TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunriseNext, sunsetNext));
-        MAP_SUN.put("Today Night duration", TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunset, sunriseNext));
+        MAP_SUN.put("Tomorrow Light duration",
+                TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunriseNext, sunsetNext));
+        MAP_SUN.put("Today Night duration",
+                TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunset, sunriseNext));
         String strSunSituation = "DOWN";
         String strCrtSituation = "After sunset";
         if (nowZ.isBefore(sunrise)) {
             strCrtSituation = "Before sunrise";
-            MAP_SUN.put(PRIOR_EVENT, "Sunset since " + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunsetPrior, nowZ));
-            MAP_SUN.put(NEXT_EVENT, "Sunrise in " + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(nowZ, sunrise));
+            MAP_SUN.put(PRIOR_EVENT, "Sunset since "
+                    + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunsetPrior, nowZ));
+            MAP_SUN.put(NEXT_EVENT, "Sunrise in "
+                    + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(nowZ, sunrise));
         } else if (nowZ.isBefore(sunset)) {
             strSunSituation = "UP";
             strCrtSituation = "In between sunrise and sunset";
-            MAP_SUN.put(PRIOR_EVENT, "Sunrise since " + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunrise, nowZ));
-            MAP_SUN.put(NEXT_EVENT, "Sunset in " + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(nowZ, sunset));
+            MAP_SUN.put(PRIOR_EVENT, "Sunrise since "
+                    + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunrise, nowZ));
+            MAP_SUN.put(NEXT_EVENT, "Sunset in "
+                    + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(nowZ, sunset));
         } else {
-            MAP_SUN.put(PRIOR_EVENT, "Sunset since " + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunset, nowZ));
-            MAP_SUN.put(NEXT_EVENT, "Sunrise in " + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(nowZ, sunriseNext));
+            MAP_SUN.put(PRIOR_EVENT, "Sunset since "
+                    + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(sunset, nowZ));
+            MAP_SUN.put(NEXT_EVENT, "Sunrise in "
+                    + TimingClass.AgingSubClass.computeAgingIntoHumanReadableWords(nowZ, sunriseNext));
         }
         MAP_SUN.put("Sun situation", strSunSituation);
         MAP_SUN.put("Current Situation", strCrtSituation);
@@ -162,7 +184,7 @@ public final class SunClass {
      */
     public static void setLatitude(final double inLatitude) {
         dblLatitude = inLatitude;
-        MAP_SUN.put("Latitude", dblLatitude);
+        MAP_SUN.put("Latitude", String.valueOf(dblLatitude));
     }
 
     /**
@@ -171,7 +193,7 @@ public final class SunClass {
      */
     public static void setLongitude(final double inLongitude) {
         dblLongitude = inLongitude;
-        MAP_SUN.put("Longitude", dblLongitude);
+        MAP_SUN.put("Longitude", String.valueOf(dblLongitude));
     }
 
     /**
@@ -183,11 +205,15 @@ public final class SunClass {
             MAP_SUN.put("Zone Name", inZoneName);
             // Pre-cache available IDs for high-performance lookup
             final ZoneId zoneId = ZoneId.of(inZoneName);
-            final String strFeedback = String.format("Given zone name %s has the corresponding ZoneId %s", inZoneName, zoneId);
+            final String strFeedback = String.format("Given zone name %s has the corresponding ZoneId %s",
+                    inZoneName,
+                    zoneId);
             LogExposureClass.LOGGER.debug(strFeedback);
             internalZoneId = zoneId;
         } catch (DateTimeException e) {
-            final String strFeedback = String.format("Given zone name %s does not seem to be a valid one... %s", inZoneName, e.getMessage());
+            final String strFeedback = String.format("Given zone name %s does not seem to be a valid one... %s",
+                    inZoneName,
+                    e.getMessage());
             LogExposureClass.LOGGER.debug(strFeedback);
         }
     }
