@@ -135,7 +135,7 @@ public final class WebClass {
                 handleHtmlContent(exchange, page);
             }
             final ZonedDateTime stopWebTimeStamp = TimingClass.getCurrentZonedDateTime();
-            final String strFeedbackEnd = TimingClass.logDuration(startWebTimeStamp,
+            final String strFeedbackEnd = TimingClass.LogSubClass.logDuration(startWebTimeStamp,
                     stopWebTimeStamp,
                     String.format("Page %s processing got completed", page));
             LogExposureClass.LOGGER.info(strFeedbackEnd);
