@@ -139,6 +139,7 @@ public final class ContentClass {
                     .toList();
             final Properties objFeatures = new Properties();
             objFeatures.put(ConfigurationClass.STR_NEW_TAB, "Profile");
+            objFeatures.put(ConfigurationClass.STR_COUNTER, "#");
             strReturn = HtmlClass.TableSubClass.getListOfSequencedMapIntoHtmlTable(orderedList, objFeatures);
         }
         return strReturn;
