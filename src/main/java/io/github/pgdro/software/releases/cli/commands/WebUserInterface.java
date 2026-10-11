@@ -1,7 +1,7 @@
 package io.github.pgdro.software.releases.cli.commands;
 
 import io.github.pgdro.software.releases.WebClass;
-import io.github.pgdro.tools.core.CommonInteractiveClass;
+import io.github.pgdro.tools.core.InteractiveInputClass;
 import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;
 import io.github.pgdro.tools.dynamic.web.UndertowClass;
 import picocli.CommandLine;
@@ -20,24 +20,24 @@ public class WebUserInterface implements Runnable {
      * CommonInteractiveClass.LocalDatabaseFileMixinClass to this command
      */
     @Mixin
-    private final CommonInteractiveClass.LocalDatabaseFileMixinClass optLocalDbFile
-            = new CommonInteractiveClass.LocalDatabaseFileMixinClass();
+    private final InteractiveInputClass.LocalDatabaseFileMixinClass optLocalDbFile
+            = new InteractiveInputClass.LocalDatabaseFileMixinClass();
 
     /**
      * adds the options defined in
      * CommonInteractiveClass.PortOptionMixinClass to this command
      */
     @Mixin
-    private final CommonInteractiveClass.PortOptionMixinClass optPortNumber
-            = new CommonInteractiveClass.PortOptionMixinClass();
+    private final InteractiveInputClass.PortOptionMixinClass optPortNumber
+            = new InteractiveInputClass.PortOptionMixinClass();
 
     /**
      * adds the options defined in
      * CommonInteractiveClass.FolderNameOptionMixinClass to this command
      */
     @Mixin
-    private final CommonInteractiveClass.FolderNameOptionMixinClass optFolderNames
-            = new CommonInteractiveClass.FolderNameOptionMixinClass();
+    private final InteractiveInputClass.FolderNameOptionMixinClass optFolderNames
+            = new InteractiveInputClass.FolderNameOptionMixinClass();
 
     /**
      * String for out FileName
@@ -45,7 +45,7 @@ public class WebUserInterface implements Runnable {
     @CommandLine.Option(
             names = {"-jl", "--jsonLocations"},
             description = "JSON file name with array of Locations",
-            arity = CommonInteractiveClass.ARITY_ONLY_ONE,
+            arity = InteractiveInputClass.ARITY_ONLY_ONE,
             required = true)
     private String strJsonLocations;
 

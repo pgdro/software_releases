@@ -1,6 +1,6 @@
 package io.github.pgdro.software.releases.cli.commands;
 
-import io.github.pgdro.tools.core.CommonInteractiveClass;
+import io.github.pgdro.tools.core.InteractiveInputClass;
 import io.github.pgdro.tools.core.ConfigurationClass;
 import io.github.pgdro.tools.core.LogExposureClass;
 import io.github.pgdro.tools.dynamic.JsonOperationsClass;
@@ -47,7 +47,7 @@ public class GetInformationFromDatabase implements Runnable {
     @CommandLine.Option(
         names = { "-dbTp", "--databaseType" },
         description = "Type of Database",
-        arity = CommonInteractiveClass.ARITY_ONLY_ONE,
+        arity = InteractiveInputClass.ARITY_ONLY_ONE,
         required = true,
         completionCandidates = DatabaseTypes.class)
     private String strDbType;
@@ -58,7 +58,7 @@ public class GetInformationFromDatabase implements Runnable {
     @CommandLine.Option(
         names = { "-infTp", "--informationType" },
         description = "Type of Information",
-        arity = CommonInteractiveClass.ARITY_ONE_OR_MORE,
+        arity = InteractiveInputClass.ARITY_ONE_OR_MORE,
         required = true,
         completionCandidates = InfoTypes.class)
     private String strInfoType;

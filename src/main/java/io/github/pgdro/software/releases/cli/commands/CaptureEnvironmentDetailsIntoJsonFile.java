@@ -1,9 +1,9 @@
 package io.github.pgdro.software.releases.cli.commands;
 
 import io.github.pgdro.software.releases.environment.EnvironmentCapturingAssembleClass;
-import io.github.pgdro.tools.core.CommonInteractiveClass;
-import io.github.pgdro.tools.core.FileContentClass;
+import io.github.pgdro.tools.core.InteractiveInputClass;
 import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.core.file.FileContentClass;
 import picocli.CommandLine;
 import picocli.CommandLine.Mixin;
 
@@ -18,8 +18,8 @@ public class CaptureEnvironmentDetailsIntoJsonFile implements Runnable {
      * CommonInteractiveClass.OutFileNameOptionMixinClass to this command
      */
     @Mixin
-    private final CommonInteractiveClass.OutFileNameOptionMixinClass optionOut
-            = new CommonInteractiveClass.OutFileNameOptionMixinClass();
+    private final InteractiveInputClass.OutFileNameOptionMixinClass optionOut
+            = new InteractiveInputClass.OutFileNameOptionMixinClass();
 
     /**
      * Main logic of the command

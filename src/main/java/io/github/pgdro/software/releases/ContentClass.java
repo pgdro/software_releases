@@ -5,8 +5,8 @@ import io.github.pgdro.software.releases.environment.EnvironmentCapturingAssembl
 import io.github.pgdro.software.releases.environment.EnvironmentSoftwareReleasesClass;
 import io.github.pgdro.tools.core.BasicStructuresClass;
 import io.github.pgdro.tools.core.ConfigurationClass;
-import io.github.pgdro.tools.core.FileStatisticsClass;
 import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.core.file.FileStatisticsClass;
 import io.github.pgdro.tools.core.time.TimingClass;
 import io.github.pgdro.tools.dynamic.JsonOperationsClass;
 import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;

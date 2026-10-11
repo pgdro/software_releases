@@ -7,7 +7,7 @@ import io.github.pgdro.software.releases.cli.commands.CaptureEnvironmentDetailsI
 import io.github.pgdro.software.releases.cli.commands.GetInformationFromDatabase;
 import io.github.pgdro.software.releases.cli.commands.GetRemoteMavenPackageDetails;
 import io.github.pgdro.software.releases.cli.commands.WebUserInterface;
-import io.github.pgdro.tools.core.CommonInteractiveClass;
+import io.github.pgdro.tools.core.InteractiveInputClass;
 import picocli.CommandLine;
 
 /**
@@ -32,9 +32,9 @@ public final class ApplicationSoftwareReleases {
     /* default */ static void main(final String... args) {
         final String logFullFilePath = System.getProperty("java.io.tmpdir")
                 + "LogsSoftwareReleases/Software-Releases";
-        CommonInteractiveClass.startMeUpWithParameters(logFullFilePath, "/software-releases-pom.xml");
+        InteractiveInputClass.startMeUpWithParameters(logFullFilePath, "/software-releases-pom.xml");
         final int intWebExitCode = new CommandLine(new ApplicationSoftwareReleases()).execute(args);
-        CommonInteractiveClass.shutMeDownWithParameters(intWebExitCode, args[0]);
+        InteractiveInputClass.shutMeDownWithParameters(intWebExitCode, args[0]);
     }
 
     /** Constructor */
