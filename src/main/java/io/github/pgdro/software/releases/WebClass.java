@@ -3,6 +3,7 @@ package io.github.pgdro.software.releases;
 
 import gg.jte.TemplateEngine;
 import gg.jte.output.Utf8ByteOutput;
+import io.github.pgdro.software.releases.environment.EnvironmentCapturingAssembleClass;
 import io.github.pgdro.tools.core.ConfigurationClass;
 import io.github.pgdro.tools.core.LogExposureClass;
 import io.github.pgdro.tools.core.ProjectClass;
@@ -12,14 +13,17 @@ import io.github.pgdro.tools.dynamic.web.HtmlClass;
 import io.github.pgdro.tools.dynamic.web.JavaTemplateRenderingClass;
 import io.github.pgdro.tools.dynamic.web.UndertowClass;
 import io.github.pgdro.tools.dynamic.web.UndertowParametersClass;
+import io.undertow.io.Sender;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HeaderMap;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.SequencedMap;
+import java.util.function.Supplier;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -37,6 +41,10 @@ public final class WebClass {
 
     static {
         buildMenu();
+    }
+
+    private WebClass() {
+        // intentionally blank
     }
 
     /**
@@ -57,10 +65,6 @@ public final class WebClass {
      * Menu builder
      */
     private static void buildMenu() {
-        MAP_MENU.put("home", Map.of(
-                ConfigurationClass.STR_ICON, "fa-solid fa-house-user fa-2x",
-                ConfigurationClass.STR_MENU, "HomePage",
-                ConfigurationClass.STR_TITLE, "HomePage"));
         MAP_MENU.put(ConfigurationClass.STR_SOFTWARE_RLS, Map.of(
                 ConfigurationClass.STR_ICON, "fa-brands fa-dev fa-2x",
                 ConfigurationClass.STR_MENU, STR_SOFT_RELEASES,
@@ -99,22 +103,23 @@ public final class WebClass {
     }
 
     /**
-     * Info context handler
-     * @param page page identifier
-     * @return info Context
+     * Handle JSON content with Environment details
+     * @param inExchange input Exchange
      */
-    private static gg.jte.Content handleInfoContext(final String page) {
-        return output -> output.writeContent( switch (page) {
-            case ConfigurationClass.STR_ENV_DTLS
-                    -> HtmlClass.FileInfoSubClass.gatherFileStatistics(
-                            Path.of(ProjectClass.getPomFile()));
-            case ConfigurationClass.STR_SOFTWARE_RLS,
-                    ConfigurationClass.STR_TS
-                    -> HtmlClass.FileInfoSubClass.gatherFileStatistics(
-                            Path.of(DatabaseSpecificSqLiteClass.getInternalDatabase()));
-            default
-                    -> "<script>document.getElementById('infoContextId').style = 'display:none;';</script>";
-        });
+    private static void handleJsonContent(final @NonNull HttpServerExchange inExchange) {
+        final String jsonEnvironment = EnvironmentCapturingAssembleClass.packageCurrentEnvironmentDetailsIntoJson();
+        final Utf8ByteOutput outputJson = new Utf8ByteOutput();
+        outputJson.writeContent(jsonEnvironment);
+        JavaTemplateRenderingClass.setOutput(outputJson);
+        JavaTemplateRenderingClass.setContentTypeValue("application/json");
+        final String strContentDisp = String.format("attachment; filename=\"environment__%s__%s.json\";",
+                EnvironmentCapturingAssembleClass.getComputerName("UNNAMED_COMPUTER"),
+                TimingClass.getCurrentDateTimeUniveralTimeCoordination().replaceAll("[-:\\s\\.]", "_"));
+        JavaTemplateRenderingClass.setContentDisposition(strContentDisp);
+        final HeaderMap header = inExchange.getResponseHeaders();
+        JavaTemplateRenderingClass.handleResponseHeader(header);
+        final Sender response = inExchange.getResponseSender();
+        JavaTemplateRenderingClass.handleRawResponseSender(response, jsonEnvironment);
     }
 
     /**
@@ -130,7 +135,7 @@ public final class WebClass {
             final String page = UndertowParametersClass.getPageParameter();
             final String jsonPage = "downloadEnvironmentDetailsAsJSONfile";
             if (page.equalsIgnoreCase(jsonPage)) {
-                ContentClass.handleJsonContent(exchange);
+                handleJsonContent(exchange);
             } else {
                 handleHtmlContent(exchange, page);
             }
@@ -155,8 +160,12 @@ public final class WebClass {
         JavaTemplateRenderingClass.packParameter("title", title);
         final gg.jte.Content myMenu = output -> output.writeContent(HtmlClass.buildMenuString(MAP_MENU));
         JavaTemplateRenderingClass.packParameter("menu", myMenu);
-        JavaTemplateRenderingClass.packParameter("infoContext", handleInfoContext(page));
-        JavaTemplateRenderingClass.packParameter("mainContent", ContentClass.handleBodyContent(page));
+        final WebInfoContextSubClass classInfo = new WebInfoContextSubClass();
+        final gg.jte.Content infoContext = output -> output.writeContent(classInfo.dispatchPageInfoContext(page));
+        JavaTemplateRenderingClass.packParameter("infoContext", infoContext);
+        final WebBodyClass classBody  = new WebBodyClass();
+        final gg.jte.Content bodyContent = output -> output.writeContent(classBody.dispatchPageBody(page));
+        JavaTemplateRenderingClass.packParameter("mainContent", bodyContent);
         JavaTemplateRenderingClass.packCommonParameters();
     }
 
@@ -176,8 +185,51 @@ public final class WebClass {
         jsonLocations = inJsonLocations;
     }
 
-    private WebClass() {
-        // intentionally blank
+    /**
+     * Web content
+     */
+    private static final class WebInfoContextSubClass {
+        /** variable for dynamic info context */
+        private final Map<String, Supplier<String>> mapPageInfoContxt = Map.ofEntries(
+                Map.entry(ConfigurationClass.STR_ENV_DTLS,     this::infoContextEnvironmentDetails),
+                Map.entry(ConfigurationClass.STR_SOFTWARE_RLS, this::infoContextInternalDatabaseStatistics),
+                Map.entry(ConfigurationClass.STR_TS,           this::infoContextInternalDatabaseStatistics)
+        );
+
+        /**
+         * Dispatcher for dynamic info context
+         * @param requestedPage given Page ID
+         * @return String with body context
+         */
+        private String dispatchPageInfoContext(final String requestedPage) {
+            return mapPageInfoContxt.getOrDefault(requestedPage, this::infoContextEmpty).get();
+        }
+
+        /**
+         * Build Object Details Information Box
+         * @return String
+         */
+        private String infoContextEmpty() {
+            return "<script>document.getElementById('infoContextId').style = 'display:none;';</script>";
+        }
+
+        /**
+         * Build Environment Details Information Box
+         * @return String
+         */
+        private String infoContextEnvironmentDetails() {
+            return HtmlClass.FileInfoSubClass.gatherFileStatistics(Path.of(ProjectClass.getPomFile()));
+        }
+
+
+        /**
+         * Build Object Details Information Box
+         * @return String
+         */
+        private String infoContextInternalDatabaseStatistics() {
+            return HtmlClass.FileInfoSubClass.gatherFileStatistics(
+                    Path.of(DatabaseSpecificSqLiteClass.getInternalDatabase()));
+        }
     }
 
 }
