@@ -8,6 +8,7 @@
 @param String currentPageQuery
 @param String geoCoordinates
 @param String page
+@param String portNumber
 @param String timeNow
 @param String title
 <!DOCTYPE html>
@@ -34,6 +35,7 @@
     <style type="text/css">.tabber{display:none;}</style>
     <header id="TitleContainer">
         <h1 id="PageTitle">${title}</h1>
+        <span id="portNo" class="portNoClass">${portNumber}</span>
         <span id="now" class="nowClass">${timeNow}</span>
         <a href="javascript:void(0);" id="openBtn" class="openbtn" onclick="openNav()">
             <i class="fa-solid fa-ellipsis"></i>

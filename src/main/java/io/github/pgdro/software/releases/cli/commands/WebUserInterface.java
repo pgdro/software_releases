@@ -54,11 +54,12 @@ public class WebUserInterface implements Runnable {
      */
     @Override
     public void run() {
-        UndertowClass.setWebPort(String.valueOf(optPortNumber.getPortNumber()));
+        final String strPortNumber = String.valueOf(optPortNumber.getPortNumber());
+        UndertowClass.setWebPort(strPortNumber);
         DatabaseSpecificSqLiteClass.setInternalDatabase(optLocalDbFile.getLocalDbFile());
         WebClass.setFolderNamesForChecksumExposure(optFolderNames.getFolderNames());
         WebClass.setJsonLocationsFile(strJsonLocations);
-        UndertowClass.setRootHandler(WebClass.handleWebContent());
+        UndertowClass.setRootHandler(WebClass.handleWebContent(strPortNumber));
         UndertowClass.runWebServer();
     }
 

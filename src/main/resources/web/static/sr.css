@@ -20,7 +20,7 @@
 .closebtn, .openbtn {
     font-size: 3rem;
     left: 0.5rem;
-    padding: 0!important;
+    padding: 0;
     position: fixed;
     top: 0.5rem;
     transition: 0.3s;
@@ -43,7 +43,7 @@
     right: 0.5rem;
     top: 1.5rem;
     width: 20rem;
-    z-index: 990 !important;
+    z-index: 990;
 }
 
 .nowClass {
@@ -55,6 +55,13 @@
 
 .openbtn {
     visibility: visible;
+}
+
+.portNoClass {
+    font-size: 0.7rem;
+    left: 0.2rem;
+    position: fixed;
+    top: 0.2rem;
 }
 
 .sidebar {
@@ -88,7 +95,7 @@ a:hover {
 }
 
 body {
-    background-color: #FFF !important;
+    background-color: White;
     font-family: Arial, sans-serif;
     font-size: 1rem;
     margin: 0;
@@ -96,7 +103,7 @@ body {
 }
 
 footer, header, nav {
-    background: rgba(0, 227, 151, 0.75) !important;
+    background-color: rgba(0, 227, 151, 0.75);
     transition: 0.5s;
 }
 
@@ -113,7 +120,7 @@ footer {
 
 h1 {
     font-size: 2rem;
-    font-weight: bold !important;
+    font-weight: bold;
     margin: 0 0 0.5rem 0;
     text-shadow: 2px 2px 4px #999;
 }
@@ -148,7 +155,7 @@ input[type=submit] {
 
 input[type=submit]:hover {
     background-position: right center;
-    color: #fff;
+    color: White;
     text-decoration: none;
 }
 
@@ -164,7 +171,7 @@ nav {
     position: fixed;
     top: 4rem;
     width: 0;
-    z-index: 800 !important;
+    z-index: 800;
 }
 
 nav ul {
@@ -182,22 +189,22 @@ nav ul li a {
 }
 
 nav ul li a svg {
-    margin-right: 0.5rem!important;
+    margin-right: 0.5rem;
 }
 
 table {
-    border: 1px solid #FFF;
+    border: 1px solid White;
     border-collapse: collapse;
     border-spacing: 0px;
     empty-cells: show;
 }
 
 table thead tr th {
-    width: auto !important;
+    width: auto;
 }
 
 table tr {
-    border-bottom: 1px dotted #ccc !important;
+    border-bottom: 1px dotted #ccc;
 }
 
 table tr:hover {
@@ -205,36 +212,35 @@ table tr:hover {
 }
 
 table tr:nth-child(even) {
-    background-color: #fff;
+    background-color: White;
     background-size: 100%;
-    background-image: linear-gradient(to bottom, #ffffff 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%);
+    background-image: linear-gradient(to bottom, White 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%);
 }
 
 table tr:nth-child(odd) {
-    background-color: #fff;
+    background-color: White;
     background-size: 100%;
-    background-image: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ededed 51%, #ffffff 100%);
+    background-image: linear-gradient(to bottom, White 0%, #f3f3f3 50%, #ededed 51%, White 100%);
 }
 
 table tr th {
-    border: 1px inset #FFF;
+    border: 1px inset White;
     box-shadow: none;
     color: #333;
     font-weight: bold;
 }
 
-table tr th,
-table tr:hover {
-    background-color: silver;
+table tr th {
+    background-color: Silver;
     background-size: 100%;
-    background-image: linear-gradient(to bottom, #c0c0c0 0%, #ffffff 100%);
-    text-shadow: 1px 1px 1px #FFF;
+    background-image: linear-gradient(to bottom, Silver 0%, White 100%);
+    text-shadow: 1px 1px 1px White;
 }
 
 table tr th:hover {
-    background-color: #ff0;
+    background-color: Yellow;
     background-size: 100%;
-    background-image: linear-gradient(to bottom, #ffff00 0%, #ffffff 100%);
+    background-image: linear-gradient(to bottom, Yellow 0%, White 100%);
 }
 
 table tr td {
@@ -243,15 +249,14 @@ table tr td {
 }
 
 table tr td:hover {
-    background-color: #fefcea;
+    background-color: PeachPuff;
     background-size: 100%;
-    background-image: radial-gradient(ellipse cover at center, #fefcea 35%, #fefcea 35%, #ffff00 100%);
-    color: #000 !important;
+    background-image: radial-gradient(ellipse at center, PeachPuff 0%, Yellow 100%);
+    color: Black;
 }
 
 td {
-    font-family: monospace !important;
-    vertical-align: top !important;
+    vertical-align: top;
 }
 
 th, td {

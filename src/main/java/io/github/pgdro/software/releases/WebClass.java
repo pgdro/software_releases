@@ -92,13 +92,16 @@ public final class WebClass {
      * @param inExchange input Exchange
      * @param page id for the content
      */
-    private static void handleHtmlContent(final HttpServerExchange inExchange, final String page) {
+    private static void handleHtmlContent(
+            final HttpServerExchange inExchange,
+            final String page,
+            final String inPortNumber) {
         JavaTemplateRenderingClass.setContentDispositionAndTypeValuesForHtmlContent();
         UndertowClass.handleCommonThings(inExchange);
         final TemplateEngine templateEngine = UndertowClass.createTemplateEngine();
         final Utf8ByteOutput output = new Utf8ByteOutput();
         JavaTemplateRenderingClass.setOutput(output);
-        packAllParameters(page);
+        packAllParameters(page, inPortNumber);
         JavaTemplateRenderingClass.renderTemplate(templateEngine, "sr.jte");
     }
 
@@ -127,7 +130,7 @@ public final class WebClass {
      * @return PathHandler web content
      */
     @NonNull
-    public static HttpHandler handleWebContent() {
+    public static HttpHandler handleWebContent(final String inPortNumber) {
         return exchange -> {
             final ZonedDateTime startWebTimeStamp = TimingClass.getCurrentZonedDateTime();
             UndertowClass.handleQueryParametersAndPage(exchange);
@@ -137,7 +140,7 @@ public final class WebClass {
             if (page.equalsIgnoreCase(jsonPage)) {
                 handleJsonContent(exchange);
             } else {
-                handleHtmlContent(exchange, page);
+                handleHtmlContent(exchange, page, inPortNumber);
             }
             final ZonedDateTime stopWebTimeStamp = TimingClass.getCurrentZonedDateTime();
             final String strFeedbackEnd = TimingClass.LogSubClass.logDuration(startWebTimeStamp,
@@ -150,8 +153,9 @@ public final class WebClass {
     /**
      * Packing all parameters to Template
      */
-    private static void packAllParameters(final String page) {
+    private static void packAllParameters(final String page, final String inPortNumber) {
         JavaTemplateRenderingClass.packParameter("page", page);
+        JavaTemplateRenderingClass.packParameter("portNumber", inPortNumber);
         String title = page;
         if (!ConfigurationClass.STR_LOCALIZATION.equalsIgnoreCase(page)) {
             final Map<String, String> menuEntry = MAP_MENU.get(page);
@@ -189,6 +193,10 @@ public final class WebClass {
      * Web content
      */
     private static final class WebInfoContextSubClass {
+        /** Constant for empty content */
+        private static final String EMPTY_CONTEXT = "<script>"
+                + "document.getElementById('infoContextId').style='display:none;';"
+                + "</script>";
         /** variable for dynamic info context */
         private final Map<String, Supplier<String>> mapPageInfoContxt = Map.ofEntries(
                 Map.entry(ConfigurationClass.STR_ENV_DTLS,     this::infoContextEnvironmentDetails),
@@ -210,7 +218,7 @@ public final class WebClass {
          * @return String
          */
         private String infoContextEmpty() {
-            return "<script>document.getElementById('infoContextId').style = 'display:none;';</script>";
+            return EMPTY_CONTEXT;
         }
 
         /**
