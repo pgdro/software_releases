@@ -224,16 +224,13 @@ table tr:nth-child(odd) {
 }
 
 table tr th {
+    background-color: Silver;
+    background-size: 100%;
+    background-image: linear-gradient(to bottom, Silver 0%, White 100%);
     border: 1px inset White;
     box-shadow: none;
     color: #333;
     font-weight: bold;
-}
-
-table tr th {
-    background-color: Silver;
-    background-size: 100%;
-    background-image: linear-gradient(to bottom, Silver 0%, White 100%);
     text-shadow: 1px 1px 1px White;
 }
 
@@ -246,6 +243,7 @@ table tr th:hover {
 table tr td {
     padding-left: 2px;
     padding-right: 2px;
+    vertical-align: top;
 }
 
 table tr td:hover {
@@ -253,10 +251,6 @@ table tr td:hover {
     background-size: 100%;
     background-image: radial-gradient(ellipse at center, PeachPuff 0%, Yellow 100%);
     color: Black;
-}
-
-td {
-    vertical-align: top;
 }
 
 th, td {
