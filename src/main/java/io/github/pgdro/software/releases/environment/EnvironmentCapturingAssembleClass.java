@@ -6,6 +6,8 @@ import io.github.pgdro.tools.core.ConfigurationClass;
 import io.github.pgdro.tools.core.LogExposureClass;
 import io.github.pgdro.tools.core.ProjectClass;
 import io.github.pgdro.tools.core.ShellingClass;
+import io.github.pgdro.tools.core.StringingClass;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -156,7 +158,7 @@ public final class EnvironmentCapturingAssembleClass {
         final String strFeedbackEnv = "I just captured Environment information...";
         LogExposureClass.LOGGER.debug(strFeedbackEnv);
         strJsonString.append(",\"Environment\":").append(strEnvironment).append('}');
-        return BasicStructuresClass.StringCleaningSubClass.ensureEscapingOnEndOfLineAndTabs(strJsonString.toString());
+        return StringingClass.StringCleaningSubClass.ensureEscapingOnEndOfLineAndTabs(strJsonString.toString());
     }
 
     /**

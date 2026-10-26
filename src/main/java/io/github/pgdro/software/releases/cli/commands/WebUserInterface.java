@@ -3,7 +3,7 @@ package io.github.pgdro.software.releases.cli.commands;
 import io.github.pgdro.software.releases.WebClass;
 import io.github.pgdro.tools.core.InteractiveInputClass;
 import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;
-import io.github.pgdro.tools.dynamic.web.UndertowClass;
+import io.github.pgdro.tools.dynamic.web.undertow.UndertowServerClass;
 import picocli.CommandLine;
 import picocli.CommandLine.Mixin;
 
@@ -55,12 +55,12 @@ public class WebUserInterface implements Runnable {
     @Override
     public void run() {
         final String strPortNumber = String.valueOf(optPortNumber.getPortNumber());
-        UndertowClass.setWebPort(strPortNumber);
+        UndertowServerClass.setWebPort(strPortNumber);
         DatabaseSpecificSqLiteClass.setInternalDatabase(optLocalDbFile.getLocalDbFile());
         WebClass.setFolderNamesForChecksumExposure(optFolderNames.getFolderNames());
         WebClass.setJsonLocationsFile(strJsonLocations);
-        UndertowClass.setRootHandler(WebClass.handleWebContent(strPortNumber));
-        UndertowClass.runWebServer();
+        UndertowServerClass.setRootHandler(WebClass.handleWebContent(strPortNumber));
+        UndertowServerClass.runWebServer();
     }
 
     /**

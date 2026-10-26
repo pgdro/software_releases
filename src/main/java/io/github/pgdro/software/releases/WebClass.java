@@ -9,10 +9,11 @@ import io.github.pgdro.tools.core.LogExposureClass;
 import io.github.pgdro.tools.core.ProjectClass;
 import io.github.pgdro.tools.core.time.TimingClass;
 import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;
-import io.github.pgdro.tools.dynamic.web.HtmlClass;
-import io.github.pgdro.tools.dynamic.web.JavaTemplateRenderingClass;
-import io.github.pgdro.tools.dynamic.web.UndertowClass;
-import io.github.pgdro.tools.dynamic.web.UndertowParametersClass;
+import io.github.pgdro.tools.dynamic.web.html.FileInfoClass;
+import io.github.pgdro.tools.dynamic.web.html.HtmlClass;
+import io.github.pgdro.tools.dynamic.web.undertow.JavaTemplateRenderingClass;
+import io.github.pgdro.tools.dynamic.web.undertow.UndertowServerClass;
+import io.github.pgdro.tools.dynamic.web.undertow.UndertowParametersClass;
 import io.undertow.io.Sender;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -97,12 +98,12 @@ public final class WebClass {
             final String page,
             final String inPortNumber) {
         JavaTemplateRenderingClass.setContentDispositionAndTypeValuesForHtmlContent();
-        UndertowClass.handleCommonThings(inExchange);
-        final TemplateEngine templateEngine = UndertowClass.createTemplateEngine();
+        UndertowServerClass.handleCommonThings(inExchange);
+        final TemplateEngine templateEngine = UndertowServerClass.createTemplateEngine();
         final Utf8ByteOutput output = new Utf8ByteOutput();
         JavaTemplateRenderingClass.setOutput(output);
         packAllParameters(page, inPortNumber);
-        JavaTemplateRenderingClass.renderTemplate(templateEngine, "sr.jte");
+        JavaTemplateRenderingClass.renderTemplate(templateEngine, "standard.jte");
     }
 
     /**
@@ -133,7 +134,7 @@ public final class WebClass {
     public static HttpHandler handleWebContent(final String inPortNumber) {
         return exchange -> {
             final ZonedDateTime startWebTimeStamp = TimingClass.getCurrentZonedDateTime();
-            UndertowClass.handleQueryParametersAndPage(exchange);
+            UndertowServerClass.handleQueryParametersAndPage(exchange);
             JavaTemplateRenderingClass.setServerExchange(exchange);
             final String page = UndertowParametersClass.getPageParameter();
             final String jsonPage = "downloadEnvironmentDetailsAsJSONfile";
@@ -154,6 +155,9 @@ public final class WebClass {
      * Packing all parameters to Template
      */
     private static void packAllParameters(final String page, final String inPortNumber) {
+        final gg.jte.Content cHeaderTags = output
+                -> output.writeContent("<link rel=\"stylesheet\" href=\"/web/static/sr.css\">");
+        JavaTemplateRenderingClass.packParameter("headerTags", cHeaderTags);
         JavaTemplateRenderingClass.packParameter("page", page);
         JavaTemplateRenderingClass.packParameter("portNumber", inPortNumber);
         String title = page;
@@ -226,7 +230,7 @@ public final class WebClass {
          * @return String
          */
         private String infoContextEnvironmentDetails() {
-            return HtmlClass.FileInfoSubClass.gatherFileStatistics(Path.of(ProjectClass.getPomFile()));
+            return FileInfoClass.gatherFileStatistics(Path.of(ProjectClass.getPomFile()));
         }
 
 
@@ -235,7 +239,7 @@ public final class WebClass {
          * @return String
          */
         private String infoContextInternalDatabaseStatistics() {
-            return HtmlClass.FileInfoSubClass.gatherFileStatistics(
+            return FileInfoClass.gatherFileStatistics(
                     Path.of(DatabaseSpecificSqLiteClass.getInternalDatabase()));
         }
     }

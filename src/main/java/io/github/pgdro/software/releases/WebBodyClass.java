@@ -10,7 +10,8 @@ import io.github.pgdro.tools.core.file.FileStatisticsClass;
 import io.github.pgdro.tools.core.time.TimingClass;
 import io.github.pgdro.tools.dynamic.JsonOperationsClass;
 import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;
-import io.github.pgdro.tools.dynamic.web.HtmlClass;
+import io.github.pgdro.tools.dynamic.web.html.TableClass;
+
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public final class WebBodyClass {
                 .map(prop -> BasicStructuresClass.ListAndMapSubClass.sortProperties(prop, desiredOrder))
                 .toList();
         return "<div><a href=\"?page=downloadEnvironmentDetailsAsJSONfile\">Dowload to a JSON file</a></div>"
-                + HtmlClass.TableSubClass.getListOfSequencedMapIntoHtmlTable(orderedList, objFeatures);
+                + TableClass.getListOfSequencedMapIntoHtmlTable(orderedList, objFeatures);
     }
 
     /**
@@ -95,7 +96,7 @@ public final class WebBodyClass {
         final List<SequencedMap<Object, Object>> orderedList = foldersStatistics.stream()
                 .map(prop -> BasicStructuresClass.ListAndMapSubClass.sortProperties(prop, desiredOrder))
                 .toList();
-        return HtmlClass.TableSubClass.getListOfSequencedMapIntoHtmlTable(orderedList, new Properties());
+        return TableClass.getListOfSequencedMapIntoHtmlTable(orderedList, new Properties());
     }
 
     /**
@@ -155,7 +156,7 @@ public final class WebBodyClass {
             final Properties objFeatures = new Properties();
             objFeatures.put(ConfigurationClass.STR_NEW_TAB, "Profile");
             objFeatures.put(ConfigurationClass.STR_COUNTER, "#");
-            strReturn = HtmlClass.TableSubClass.getListOfSequencedMapIntoHtmlTable(orderedList, objFeatures);
+            strReturn = TableClass.getListOfSequencedMapIntoHtmlTable(orderedList, objFeatures);
         }
         return strReturn;
     }
@@ -168,7 +169,7 @@ public final class WebBodyClass {
     private String bodyTableStatistics() {
         final List<SequencedMap<Object, Object>> inList
         =  DatabaseSpecificSqLiteClass.SqLiteStatisticsSubClass.getTableStatisticsIntoListForHtmlTable();
-        return HtmlClass.TableSubClass.getListOfSequencedMapIntoHtmlTable(inList, new Properties());
+        return TableClass.getListOfSequencedMapIntoHtmlTable(inList, new Properties());
     }
 
 }

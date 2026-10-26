@@ -6,8 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import io.github.pgdro.tools.core.BasicStructuresClass;
+
 import io.github.pgdro.software.releases.RemoteInformationRetrievalClass;
+import io.github.pgdro.tools.core.StringingClass;
 
 /**
  * Testing for RemoteInformationRetrievalClass
@@ -19,7 +20,7 @@ class RemoteInformationRetrievalClassTests {
     void testGetLatestVersionFromMavenCentralRepository() {
         final String strPackage = "com.github.oshi:oshi-core-ffm";
         final String handled = RemoteInformationRetrievalClass.MavenSubClass.getLatestVersionFromMavenCentralRepository(strPackage);
-        final boolean isVersion = BasicStructuresClass.StringEvaluationSubClass.isStringActuallyVersion(handled);
+        final boolean isVersion = StringingClass.StringEvaluationSubClass.isStringActuallyVersion(handled);
         assertAll("Testing if latest Maven package version is a String as a version pattern",
                 () -> assertNotNull(handled, String.format("Latest Version should not be null... %s", handled)),
                 () -> assertTrue(isVersion, String.format("Environment gathering logic should not be null... %s", handled))

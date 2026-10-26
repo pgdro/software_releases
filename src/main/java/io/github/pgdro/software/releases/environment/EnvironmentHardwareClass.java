@@ -1,7 +1,8 @@
 package io.github.pgdro.software.releases.environment;
 
-import io.github.pgdro.tools.core.BasicStructuresClass;
 import io.github.pgdro.tools.core.ConfigurationClass;
+import io.github.pgdro.tools.core.StringingClass;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -118,7 +119,7 @@ public final class EnvironmentHardwareClass {
         final List<GraphicsCard> graphicCards = OshiUsageClass.HardwareSubClass.getOshiGraphicsCards();
         for (final GraphicsCard  graphicCard : graphicCards) {
             final String strIdentifier = "Video Card ID#"
-                    + BasicStructuresClass.StringTransformationSubClass.computeStringSignature(graphicCard.getName())
+                    + StringingClass.StringTransformationSubClass.computeStringSignature(graphicCard.getName())
                     + " ";
             arrayAttributes.putAll(Map.of(
                     strIdentifier + ConfigurationClass.STR_NAME, graphicCard.getName(),
