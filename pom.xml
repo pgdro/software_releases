@@ -6,7 +6,7 @@
 
     <groupId>io.github.pgdro</groupId>
     <artifactId>software_releases</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
     <packaging>jar</packaging>
 
     <name>software_releases</name>
@@ -52,15 +52,17 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <sonar.organization>pgdro</sonar.organization>
         <!-- Dependency versions -->
-        <io.github.pgdro.tools.version>2.2.0</io.github.pgdro.tools.version>
+        <tools.version>2.2.1</tools.version>
         <jackson-databind.version>3.2.4</jackson-databind.version>
         <junit-jupiter.version>6.1.3</junit-jupiter.version>
         <oshi-core-ffm.version>7.7.2</oshi-core-ffm.version>
         <!-- Build Plugin versions -->
         <central-publishing-maven-plugin.version>0.12.0</central-publishing-maven-plugin.version>
         <depgraph-maven-plugin.version>4.0.5</depgraph-maven-plugin.version>
+        <flatten-maven-plugin.version>1.8.0</flatten-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
+        <maven-check-license.version>1.3.0</maven-check-license.version>
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
@@ -87,12 +89,12 @@
         <dependency>
             <groupId>io.github.pgdro</groupId>
             <artifactId>core</artifactId>
-            <version>${io.github.pgdro.tools.version}</version>
+            <version>${tools.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.pgdro</groupId>
             <artifactId>dynamic</artifactId>
-            <version>${io.github.pgdro.tools.version}</version>
+            <version>${tools.version}</version>
         </dependency>
         <!-- Test dependencies -->
         <!-- Source: https://junit.org/ -->
@@ -107,6 +109,65 @@
 
     <build>
         <plugins>
+            <!-- Website: https://www.mojohaus.org/flatten-maven-plugin/ -->
+            <!-- Source: https://github.com/mojohaus/flatten-maven-plugin -->
+            <!-- Binaries: https://repo1.maven.org/maven2/org/codehaus/mojo/flatten-maven-plugin/ -->
+            <!-- Description: Plugin to generate flattened POM (reduced and resolved information required for consumers of maven repositories) and to use (install, sign, deploy) it instead of original pom.xml. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <!-- enable flattening -->
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <!-- ensure proper cleanup -->
+                    <execution>
+                        <id>flatten.clean</id>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Source: https://github.com/codemonstur/maven-check-license -->
+            <!-- Binaries: https://repo1.maven.org/maven2/com/github/codemonstur/maven-check-license/ -->
+            <!-- Description: A maven plugin for checking licenses of dependencies -->
+            <plugin>
+                <groupId>com.github.codemonstur</groupId>
+                <artifactId>maven-check-license</artifactId>
+                <version>${maven-check-license.version}</version>
+                <executions>
+                    <execution>
+                        <id>check-dependency-licenses</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <printCompliant>true</printCompliant> <!-- default: false -->
+                    <checkPluginDependencies>true</checkPluginDependencies> <!-- default: false -->
+                    <strategy>passOnMatch</strategy>
+                    <rules>
+                        <rule>url:regex:(http|https)://(www.)?apache.org/licenses/LICENSE-2.0(.txt)?</rule>
+                        <rule>url:regex:(http|https)://(www.)?eclipse.org/legal/epl-(2.0/|v10.html|v20.html)</rule>
+                        <rule>url:regex:(http|https)://(www.)?eclipse.org/org/documents/epl-2.0/EPL-2.0.html</rule>
+                        <rule>url:regex:(http|https)://repository.jboss.org/licenses/(LICENSE-2.0|apache-2.0.txt)</rule>
+                        <rule>url:regex:(http|https)://(www.)?opensource.org/licenses/(BSD-3-Clause|bsd-license.php)</rule>
+                        <rule>url:regex:(http|https)://(www.)?opensource.org/license(|s)/(MIT|mit|mit-license.php)</rule>
+                    </rules>
+                </configuration>
+            </plugin>
             <!-- Source: https://github.com/ferstl/depgraph-maven-plugin -->
             <!-- Binaries: https://repo1.maven.org/maven2/com/github/ferstl/depgraph-maven-plugin/ -->
             <!-- Description: This Maven plugin generates dependency graphs on single modules or in an aggregated form on multimodule projects. The graphs are represented by .dot files. In case that Graphviz is installed on the machine where this plugin is run, the .dot file can be directly converted into all supported image files. -->
@@ -360,7 +421,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.9,)</version>
+                                    <version>[3.10,)</version>
                                 </requireMavenVersion>
                             </rules>
                         </configuration>
