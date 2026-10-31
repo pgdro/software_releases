@@ -138,7 +138,7 @@ public final class WebClass {
             JavaTemplateRenderingClass.setServerExchange(exchange);
             final String page = UndertowParametersClass.getPageParameter();
             final String jsonPage = "downloadEnvironmentDetailsAsJSONfile";
-            if (page.equalsIgnoreCase(jsonPage)) {
+            if (jsonPage.equalsIgnoreCase(page)) {
                 handleJsonContent(exchange);
             } else {
                 handleHtmlContent(exchange, page, inPortNumber);
