@@ -42,7 +42,8 @@ WITH
             , "bv"."VersionCode"                                                AS "Latest release version"
             , "bv"."ReleaseDate"                                                AS "Latest release date"
             , SUBSTR(TIMEDIFF('now', "bv"."ReleaseDate"), 0, 12)                AS "Latest release aging full"
-            , (JulianDay(date()) - JulianDay("bv"."ReleaseDate"))               AS "Latest release aging days"
+            , (JulianDay(date())
+                - JulianDay(SUBSTR("bv"."ReleaseDate", 0, 12)))                 AS "Latest release aging days"
             , "bv"."VersionId"                                                  AS "VersionId"
             , IFNULL("pl"."ProfileName", '#')                                   AS "Profile Name"
             , IFNULL("pl"."ProfileId", 999)                                     AS "ProfileId"
