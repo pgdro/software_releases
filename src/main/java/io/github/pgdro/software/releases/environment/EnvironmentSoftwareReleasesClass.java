@@ -3,7 +3,7 @@ package io.github.pgdro.software.releases.environment;
 import io.github.pgdro.software.releases.WebClass;
 import io.github.pgdro.tools.core.BasicStructuresClass;
 import io.github.pgdro.tools.core.ConfigurationClass;
-import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.core.log.LogExposureClass;
 import io.github.pgdro.tools.dynamic.database.DatabaseOperationsClass;
 import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;
 import java.sql.Connection;

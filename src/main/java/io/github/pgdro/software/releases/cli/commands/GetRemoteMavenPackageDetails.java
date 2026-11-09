@@ -2,8 +2,8 @@ package io.github.pgdro.software.releases.cli.commands;
 
 import io.github.pgdro.software.releases.RemoteInformationRetrievalClass;
 import io.github.pgdro.tools.core.ConfigurationClass;
-import io.github.pgdro.tools.core.LogExposureClass;
 import io.github.pgdro.tools.core.RegularExpressionsClass;
+import io.github.pgdro.tools.core.log.LogExposureClass;
 import java.util.Locale;
 import java.util.Properties;
 import picocli.CommandLine;

@@ -2,12 +2,12 @@
  * Copyright 2026 Daniel-Gheorghe Popiniuc
  */
 package io.github.pgdro.software.releases.cli;
-
 import io.github.pgdro.software.releases.cli.commands.CaptureEnvironmentDetailsIntoJsonFile;
 import io.github.pgdro.software.releases.cli.commands.GetInformationFromDatabase;
 import io.github.pgdro.software.releases.cli.commands.GetRemoteMavenPackageDetails;
 import io.github.pgdro.software.releases.cli.commands.WebUserInterface;
 import io.github.pgdro.tools.core.InteractiveInputClass;
+import java.nio.file.Path;
 import picocli.CommandLine;
 
 /**
@@ -30,9 +30,11 @@ public final class ApplicationSoftwareReleases {
      * @param args command-line arguments
      */
     /* default */ static void main(final String... args) {
-        final String logFullFilePath = System.getProperty("java.io.tmpdir")
-                + "LogsSoftwareReleases/Software-Releases";
-        InteractiveInputClass.startMeUpWithParameters(logFullFilePath, "/software-releases-pom.xml");
+        final String logFullFilePath = Path.of(
+                System.getProperty("java.io.tmpdir"),
+                "LogsSoftwareReleases").toAbsolutePath().toString();
+        System.setProperty("myapp.log.dir", logFullFilePath);
+        InteractiveInputClass.startMeUpWithParameters("/software-releases-pom.xml");
         final int intWebExitCode = new CommandLine(new ApplicationSoftwareReleases()).execute(args);
         InteractiveInputClass.shutMeDownWithParameters(intWebExitCode, args[0]);
     }

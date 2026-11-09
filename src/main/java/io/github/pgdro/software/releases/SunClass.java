@@ -1,9 +1,7 @@
-/*
- * Copyright 2026 Daniel-Gheorghe Popiniuc
- */
+/** Copyright 2026 Daniel-Gheorghe Popiniuc */
 package io.github.pgdro.software.releases;
 
-import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.core.log.LogExposureClass;
 import io.github.pgdro.tools.core.time.TimingClass;
 import java.time.DateTimeException;
 import java.time.LocalDate;

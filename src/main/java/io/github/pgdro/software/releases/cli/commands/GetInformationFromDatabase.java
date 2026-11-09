@@ -2,7 +2,7 @@ package io.github.pgdro.software.releases.cli.commands;
 
 import io.github.pgdro.tools.core.InteractiveInputClass;
 import io.github.pgdro.tools.core.ConfigurationClass;
-import io.github.pgdro.tools.core.LogExposureClass;
+import io.github.pgdro.tools.core.log.LogExposureClass;
 import io.github.pgdro.tools.dynamic.JsonOperationsClass;
 import io.github.pgdro.tools.dynamic.database.DatabaseSpecificMySqlClass;
 import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSnowflakeClass;
