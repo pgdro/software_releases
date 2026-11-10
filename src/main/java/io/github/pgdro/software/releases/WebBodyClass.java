@@ -11,7 +11,6 @@ import io.github.pgdro.tools.core.time.TimingClass;
 import io.github.pgdro.tools.dynamic.JsonOperationsClass;
 import io.github.pgdro.tools.dynamic.database.DatabaseSpecificSqLiteClass;
 import io.github.pgdro.tools.dynamic.web.html.TableClass;
-
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public final class WebBodyClass {
      * Constructor
      */
     public WebBodyClass() {
-        super();
+        // intentionally blank
     }
 
     /**
