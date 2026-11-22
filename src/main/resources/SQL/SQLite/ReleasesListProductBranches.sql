@@ -70,7 +70,12 @@ WITH
             , TRIM(
                 GROUP_CONCAT(
                     IIF("fv"."FileType" = "cc"."Kit"
-                        , "fl"."FileName", '')), ',')                           AS "File Kit Name"
+                        , '<a href="' || "fl"."DownloadingUrl"
+                            || IF(SUBSTR("fl"."DownloadingUrl", -1) = "/", "", "/")
+                            || "fl"."FileName"
+                            || '" target="_blank">'
+                            || "fl"."FileName"
+                            || '</a>', '')), ',')                               AS "File Kit Name"
             , TRIM(
                 GROUP_CONCAT(
                     IIF("fv"."FileType" = "cc"."Installed_Id"
