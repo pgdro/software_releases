@@ -17,6 +17,8 @@ WITH
                 ORDER BY
                       "bv"."ReleaseDate" DESC
                     , "bv"."VersionId" DESC)                                    AS "Latest VersionId"
+            , CURRENT_TIMESTAMP                                                 AS "NOW_UTC"
+            , DATETIME(CURRENT_TIMESTAMP, 'localtime')                          AS "NOW_LOCAL"
         FROM
             "organization"                                                      AS "o"
             LEFT JOIN "organization_product"                                    AS "op"   ON
@@ -40,8 +42,20 @@ WITH
             , "ci"."BranchId"                                                   AS "BranchId"
             , "ci"."Releases"                                                   AS "Releases"
             , "bv"."VersionCode"                                                AS "Latest release version"
-            , "bv"."ReleaseDate"                                                AS "Latest release date"
-            , SUBSTR(TIMEDIFF('now', "bv"."ReleaseDate"), 0, 12)                AS "Latest release aging full"
+            , "bv"."ReleaseDate"
+                || IF(LENGTH("bv"."ReleaseDate") = 10, ' 12:00', '')            AS "Latest release date"
+            , SUBSTR(
+                TIMEDIFF("ci"."NOW_UTC"
+                    , "bv"."ReleaseDate"
+                        || CASE
+                            WHEN LENGTH("bv"."ReleaseDate") = 10 THEN
+                                ' 12:00:00'
+                            WHEN LENGTH("bv"."ReleaseDate") = 16 THEN
+                                ':00'
+                            ELSE
+                                ''
+                            END)
+                , 0, 18)                                                        AS "Latest release aging full"
             , (JulianDay(date())
                 - JulianDay(SUBSTR("bv"."ReleaseDate", 0, 12)))                 AS "Latest release aging days"
             , "bv"."VersionId"                                                  AS "VersionId"
@@ -71,7 +85,7 @@ WITH
                 GROUP_CONCAT(
                     IIF("fv"."FileType" = "cc"."Kit"
                         , '<a href="' || "fl"."DownloadingUrl"
-                            || IF(SUBSTR("fl"."DownloadingUrl", -1) = "/", "", "/")
+                            || IF(SUBSTR("fl"."DownloadingUrl", -1) = '/', '', '/')
                             || "fl"."FileName"
                             || '" target="_blank">'
                             || "fl"."FileName"

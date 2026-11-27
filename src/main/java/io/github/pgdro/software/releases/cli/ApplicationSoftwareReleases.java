@@ -6,7 +6,6 @@ import io.github.pgdro.software.releases.cli.commands.GetInformationFromDatabase
 import io.github.pgdro.software.releases.cli.commands.JsonSplit;
 import io.github.pgdro.software.releases.cli.commands.WebUserInterface;
 import io.github.pgdro.tools.core.InteractiveInputClass;
-
 import java.nio.file.Path;
 import picocli.CommandLine;
 

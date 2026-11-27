@@ -73,6 +73,9 @@ public class JsonSplit implements Runnable {
                     + "(use -1 for no bucketing)")
     private static int bucketLength;
 
+    /**
+     * Main method for JsonSplit
+     */
     @Override
     public void run() {
         final String[] inFiles = OPT_FILE_NAMES.getInFileNames();
